@@ -2,7 +2,7 @@
 
 $conn = new PDO("mysql:dbname=dbphp7;host=localhost","root","");
 
-$stmt = $conn->prepare("Select * from tb_usuarios order by desclogin");
+$stmt = $conn->prepare("Select * from tb_usuarios order by deslogin");
 
 $stmt->execute();
 
