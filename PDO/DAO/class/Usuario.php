@@ -58,16 +58,21 @@ class Usuario {
  
 	}
 
-	public function __toString(){
+	public function __toString() {
+ 
+	    $data = $this->getDtcadastro();
+	    if($data) {
+	 
+	        $this->getDtcadastro()->format("d/m/Y H:i:s");
+	    }
+	 
 	    return json_encode(array(
 	            "idusuario"=>$this->getIdusuario(),
 	            "deslogin"=>$this->getDeslogin(),
 	            "dessenha"=>$this->getDessenha(),
-	            "dtcadastro"=>$this->getDtcadastro()->format("d/m/Y H:i:s")
-	    ));
+	            "dtcadastro"=> $data
+    	));
 	} 
-
-
 }
 
 ?>
