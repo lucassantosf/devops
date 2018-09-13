@@ -7,6 +7,9 @@
 </form>
 
 <?php
+//Esta duas próximas linha aumentam o limite do tamanho do arquivo a ser feito o upload
+ini_set('post_max_size', '64M');
+ini_set('upload_max_filesize', '64M');
 
 if($_SERVER["REQUEST_METHOD"] === "POST"){
 
