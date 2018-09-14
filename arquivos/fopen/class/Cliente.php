@@ -2,16 +2,24 @@
 
 class Cliente {
 
-	private $idusuario;	
+	private $idcliente;
+	private $nomecliente;
 	private $deslogin;
 	private $dessenha;
 	private $dtcadastro;
 
-	public function getIdusuario(){
-		return $this->idusuario;
+	public function getIdcliente(){
+		return $this->idcliente;
 	}
-	public function setIdusuario($value){
-		$this->idusuario = $value;
+	public function setIdcliente($value){
+		$this->idcliente = $value;
+	}
+
+	public function getNomecliente(){
+		return $this->nomecliente;
+	}
+	public function setNomecliente($value){
+		$this->nomecliente = $value;
 	}
 
 	public function getDeslogin(){
@@ -38,7 +46,7 @@ class Cliente {
 	public function loadById($id){
 		$sql = new Sql();
 
-		$result = $sql->select("SELECT * from tb_usuarios WHERE id_usuario = :ID", array(
+		$result = $sql->select("SELECT * from tb_clientes WHERE id_cliente = :ID", array(
 			":ID"=>$id
 		));
 
@@ -52,14 +60,14 @@ class Cliente {
 	public static function getList(){
 
 		$sql = new Sql();
-		return $sql->select("SELECT * from tb_usuarios ORDER BY desclogin;");
+		return $sql->select("SELECT * from tb_clientes ORDER BY deslogin;");
 	}
 
 	//Exemplo de Select 
 	public static function search($login){
 
 		$sql = new Sql();
-		return $sql->select("Select * from tb_usuarios where desclogin like :SEARCH order by deslogin ",array(
+		return $sql->select("Select * from tb_clientes where deslogin like :SEARCH order by deslogin ",array(
 			":SEARCH"=>"%".$login."%"
 		));		
 	}
@@ -69,7 +77,7 @@ class Cliente {
 
 		$sql = new Sql();
 
-		$result = $sql->select("SELECT * from tb_usuarios WHERE desclogin = :LOGIN
+		$result = $sql->select("SELECT * from tb_clientes WHERE deslogin = :LOGIN
 			and dessenha = :PASSWORD", array(
 			":LOGIN"=>$login,
 			":PASSWORD"=>$password
@@ -85,8 +93,9 @@ class Cliente {
 
 	//Responsável por distribuir os dados no objeto
 	public function setData($data){
-		$this->setIdusuario($data['id_usuario']);		
-		$this->setDeslogin($data['desclogin']);
+		$this->setIdcliente($data['id_cliente']);
+		$this->setNomecliente($data['nome_cliente']);
+		$this->setDeslogin($data['deslogin']);
 		$this->setDessenha($data['dessenha']);
 		$this->setDtcadastro(new DateTime($data['dtcadastro']));
 	}
@@ -95,7 +104,8 @@ class Cliente {
 	public function insert(){
 
 		$sql = new Sql();
-		$results = $sql->select("CALL sp_usuarios_insert(:LOGIN, :PASSWORD)", array(			
+		$results = $sql->select("CALL sp_clientes_insert(:NAME, :LOGIN, :PASSWORD)", array(
+			':NAME'=>$this->getNomecliente(),
 			':LOGIN'=>$this->getDeslogin(),
 			':PASSWORD'=>$this->getDessenha()
 		));		
@@ -113,7 +123,7 @@ class Cliente {
 
 		$sql = new Sql();
 		
-		$sql->query("UPDATE tb_usuarios SET desclogin = :LOGIN, dessenha = :PASSWORD WHERE id_usuario = :ID", array(
+		$sql->query("UPDATE tb_clientes SET deslogin = :LOGIN, dessenha = :PASSWORD WHERE id_cliente = :ID", array(
 			':LOGIN'=>$this->getDeslogin(),
 			':PASSWORD'=>$this->getDessenha(),
 			':ID'=>$this->getIdcliente(),
@@ -124,11 +134,12 @@ class Cliente {
 	public function delete(){
 
 		$sql = new Sql();
-		$sql->query("DELETE FROM tb_usuarios WHERE id_usuario = :ID",array(
+		$sql->query("DELETE FROM tb_clientes WHERE id_cliente = :ID",array(
 			':ID'=>$this->getIdcliente()
 		));
 
-		$this->setIdusuario(0);
+		$this->setIdcliente(0);
+		$this->setNomecliente("");
 		$this->setDeslogin("");
 		$this->setDessenha("");
 		$this->setDtcadastro(new DateTime());	
@@ -136,7 +147,8 @@ class Cliente {
 	}
 
 	//Método construtor, sempre que instanciado a classe, nome login e senha são passados
-	public function __construct($login = "", $password=""){
+	public function __construct($name = "", $login = "", $password=""){
+		$this->setNomecliente($name);
 		$this->setDeslogin($login);
 		$this->setDessenha($password);
 	}
@@ -151,8 +163,9 @@ class Cliente {
 	    }
 	 
 	    return json_encode(array(
-	            "id_usuario"=>$this->getIdusuario(),	            
-	            "desclogin"=>$this->getDeslogin(),
+	            "id_cliente"=>$this->getIdcliente(),
+	            "nome_cliente"=>$this->getNomecliente(),
+	            "deslogin"=>$this->getDeslogin(),
 	            "dessenha"=>$this->getDessenha(),
 	            "dtcadastro"=> $data
 	    ));
@@ -164,15 +177,15 @@ class Cliente {
 //Procedure do banco para realizar o insert
 /*
 
-CREATE PROCEDURE `sp_usuarios_insert` (pdeslogin varchar(64),pdessenha varchar(256)
+CREATE PROCEDURE `sp_clientes_insert` (pnome_cliente varchar(45),pdeslogin varchar(64),pdessenha varchar(256)
 )
 
 BEGIN
 
-insert into tb_usuarios (desclogin, dessenha) 
-values (pdeslogin, pdessenha);
+insert into tb_clientes (nome_cliente, deslogin, dessenha) 
+values (pnome_cliente, pdeslogin, pdessenha);
 
-select * from tb_usuarios where id_usuario = LAST_INSERT_ID();
+select * from tb_clientes where id_cliente = LAST_INSERT_ID();
 
 END*/
 
