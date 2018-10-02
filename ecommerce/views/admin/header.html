@@ -5,21 +5,18 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>AdminLTE 2 | Starter</title>
-  <!-- Tell the browser to be responsive to screen width -->
+  
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <!-- Bootstrap 3.3.6 -->
-  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-  <!-- Font Awesome -->
+  
+  <link rel="stylesheet" href="/php/ecommerce/res/admin/bootstrap/css/bootstrap.min.css">
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
-  <!-- Ionicons -->
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="/res/admin/dist/css/AdminLTE.min.css">
-  <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
-        page. However, you can choose any other skin. Make sure you
-        apply the skin class to the body tag so the changes take effect.
-  -->
-  <link rel="stylesheet" href="/res/admin/dist/css/skins/skin-blue.min.css">
+  
+  <link rel="stylesheet" href="/php/ecommerce/res/admin/dist/css/AdminLTE.min.css">
+ 
+  <link rel="stylesheet" href="/php/ecommerce/res/admin/dist/css/skins/skin-blue.min.css">
 
 </head>
 
@@ -29,53 +26,44 @@
   <!-- Main Header -->
   <header class="main-header">
 
-    <!-- Logo -->
     <a href="index2.html" class="logo">
-      <!-- mini logo for sidebar mini 50x50 pixels -->
+      
       <span class="logo-mini"><b>A</b>LT</span>
-      <!-- logo for regular state and mobile devices -->
+      
       <span class="logo-lg"><b>Admin</b>LTE</span>
+
     </a>
 
-    <!-- Header Navbar -->
     <nav class="navbar navbar-static-top" role="navigation">
-      <!-- Sidebar toggle button-->
+      
       <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
         <span class="sr-only">Toggle navigation</span>
       </a>
-      <!-- Navbar Right Menu -->
       <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
-          <!-- Messages: style can be found in dropdown.less-->
-          <li class="dropdown messages-menu">
-            <!-- Menu toggle button -->
+        <ul class="nav navbar-nav">          
+          <li class="dropdown messages-menu">            
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-envelope-o"></i>
               <span class="label label-success">4</span>
             </a>
             <ul class="dropdown-menu">
               <li class="header">You have 4 messages</li>
-              <li>
-                <!-- inner menu: contains the messages -->
+              <li>                
                 <ul class="menu">
-                  <li><!-- start message -->
+                  <li>
                     <a href="#">
-                      <div class="pull-left">
-                        <!-- User Image -->
+                      <div class="pull-left">                        
                         <img src="/res/admin/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
                       </div>
-                      <!-- Message title and timestamp -->
                       <h4>
                         Support Team
                         <small><i class="fa fa-clock-o"></i> 5 mins</small>
                       </h4>
-                      <!-- The message -->
                       <p>Why not buy a new awesome theme?</p>
                     </a>
                   </li>
-                  <!-- end message -->
                 </ul>
-                <!-- /.menu -->
+               
               </li>
               <li class="footer"><a href="#">See All Messages</a></li>
             </ul>
@@ -181,7 +169,7 @@
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="/php/ecommerce/admin/logout" class="btn btn-default btn-flat">Sign out</a>
                 </div>
               </li>
             </ul>
@@ -203,7 +191,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="/res/admin/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+          <img src="/php/ecommerce/res/admin/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
           <p>Alexander Pierce</p>
