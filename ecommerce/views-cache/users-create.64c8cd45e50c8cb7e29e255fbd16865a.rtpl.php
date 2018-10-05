@@ -12,7 +12,6 @@
   </ol>
 </section>
 
-<!-- Main content -->
 <section class="content">
 
   <div class="row">
@@ -20,9 +19,7 @@
   		<div class="box box-success">
         <div class="box-header with-border">
           <h3 class="box-title">Novo Usuário</h3>
-        </div>
-        <!-- /.box-header -->
-        <!-- form start -->
+        </div>        
         <form role="form" action="/php/ecommerce/admin/users/create" method="post">
           <div class="box-body">
             <div class="form-group">
@@ -51,7 +48,7 @@
               </label>
             </div>
           </div>
-          <!-- /.box-body -->
+          
           <div class="box-footer">
             <button type="submit" class="btn btn-success">Cadastrar</button>
           </div>
@@ -61,6 +58,5 @@
   </div>
 
 </section>
-<!-- /.content -->
+
 </div>
-<!-- /.content-wrapper -->
