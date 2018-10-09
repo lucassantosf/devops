@@ -46,6 +46,19 @@ class Product extends Model {
 		$this->setData($results[0]);
 	}
 
+	public static function checkList($list){
+
+		foreach ($list as &$row) {
+			$p = new Product();
+			$p->setData($row);
+			$row = $p->getValues();
+		}
+
+		return $list;
+	}
+
+
+
 	public function delete(){
 
 		$sql = new Sql();
@@ -57,11 +70,14 @@ class Product extends Model {
 
 	public function checkPhoto(){
 
-		if(file_exists($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR."php".DIRECTORY_SEPARATOR."ecommerce".DIRECTORY_SEPARATOR."res".DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."img".DIRECTORY_SEPARATOR."products".$this->getidproduct().".jpg")){
+		if(file_exists($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR."php".DIRECTORY_SEPARATOR."ecommerce".DIRECTORY_SEPARATOR."res".DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."img".DIRECTORY_SEPARATOR."products".DIRECTORY_SEPARATOR.$this->getidproduct().".jpg")){
 
-			$url = "/php/ecommerce/res/site/img/products/".$this->getidproduct()."jpg";
+			$url = "/php/ecommerce/res/site/img/products/".$this->getidproduct().".jpg";
+
 		}else{
+			
 			$url = "/php/ecommerce/res/site/img/product.jpg";
+		
 		}
 
 		return $this->setdesphoto($url);
@@ -87,17 +103,16 @@ class Product extends Model {
 			case "jpg":
 			case "jpeg":
 				$image = imagecreatefromjpeg($file["tmp_name"]);
-			break;
+				break;
 			case "gif":
 				$image = imagecreatefromgif($file["tmp_name"]);
-			break;
-
+				break;
 			case "png":
 				$image = imagecreatefrompng($file["tmp_name"]);
-			break;
+				break;
 		}
 
-		$dist = $_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR."php".DIRECTORY_SEPARATOR."ecommerce".DIRECTORY_SEPARATOR."res".DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."img".DIRECTORY_SEPARATOR."products".$this->getidproduct().".jpg";
+		$dist = $_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR."php".DIRECTORY_SEPARATOR."ecommerce".DIRECTORY_SEPARATOR."res".DIRECTORY_SEPARATOR."site".DIRECTORY_SEPARATOR."img".DIRECTORY_SEPARATOR."products".DIRECTORY_SEPARATOR.$this->getidproduct().".jpg";
 
 		imagejpeg($image, $dist);
 

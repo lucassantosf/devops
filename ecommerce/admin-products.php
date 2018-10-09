@@ -38,7 +38,7 @@ $app->post("/admin/products/create", function(){
 
 	$product->save();
 
-	header('Location : /php/ecommerce/admin/products');
+	header("Location: /php/ecommerce/admin/products");
 
 	exit;
 
@@ -74,7 +74,7 @@ $app->post("/admin/products/:idproduct", function($idproduct){
 
 	if($_FILES["file"]["name"] !== "") $product->setPhoto($_FILES["file"]);
 
-	header('Location : /php/ecommerce/admin/products');
+	header("Location: /php/ecommerce/admin/products");
 
 	exit;
 });
@@ -89,7 +89,7 @@ $app->get("/admin/products/:idproduct/delete", function($idproduct){
 
 	$product->delete();
 
-	header('Location : /php/ecommerce/admin/products');
+	header("Location: /php/ecommerce/admin/products");
 
 	exit;
 
