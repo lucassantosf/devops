@@ -4,6 +4,7 @@ namespace Hcode\Model;
 
 use \Hcode\DB\Sql;
 use \Hcode\Model;
+use \Hcode\Model\User;
 
 class Cart extends Model {
 
@@ -27,9 +28,18 @@ class Cart extends Model {
 					'dessessionid'=>session_id(),
 				];
 
-				$user = User::getFromSession();
+				if(User::checkLogin(false)){
 
-				if($user->getiduser() >)
+					$user = User::getFromSession();
+					$data['iduser'] = $user->getiduser();	
+				}
+
+				$cart->setData($data);
+
+				$cart->save();
+
+				$cart->setToSession();
+				
 			}
 		}
 
@@ -38,6 +48,13 @@ class Cart extends Model {
 	}
 
 	
+	public function setToSession(){
+
+		$_SESSION[Cart::SESSION] = $this->getValues();
+
+
+	}
+
 
 	public function getFromSessionID(){
 
@@ -85,6 +102,53 @@ class Cart extends Model {
 		$this->setData($results[0]);
 	}
 
+	public function addProduct(Product $product){
+
+		$sql = new Sql();
+
+		$sql->query("insert into tb_cartsproducts (idcart, idproduct) values(:idcart, :idproduct)",[
+			':idcart'=>$this->getidcart(),
+			':idproduct'=>$product->getidproduct()
+		]);
+	}
+
+	public function removeProduct(Product $product, $all = false){
+
+		$sql = new Sql();
+
+		if($all){
+
+			$sql->query("update tb_cartsproducts set dtremoved = now() where idcart = :idcart and idprodut = :idprodut and dtremoved is null",[
+				':idcart'=>$this->getidcart(),
+				':idprodut'=>$product->getidproduct()
+			]);
+		}else{
+
+			$sql->query("update tb_cartsproducts set dtremoved = now() where idcart = :idcart and idprodut = :idprodut and dtremoved is null limit 1",[
+				':idcart'=>$this->getidcart(),
+				':idprodut'=>$product->getidproduct()
+			]);
+		}
+	}
+
+	public function getProducts(){
+
+		$sql = new Sql();
+
+		$rows = $sql->select("
+			select b.idproduct, b.desproduct, b.vlprice, b.vlwidth, b.vlheight, b.vllenght, b.weight, b.desurl, count(*) as nrqtd, sum(b.vlprice) as vltotal
+			from tb_cartsproducts a 
+			inner join tb_products b on a.idprodut = b.idprodut 
+			where a.idcart = :idcart and a.dtremoved is null 
+			group by b.idproduct, b.desproduct, b.vlprice, b.vlwidth, b.vlheight, b.vllenght, b.weight, b.desurl
+			order by b.desproduct
+		",[
+			':idcart'=>$this->getidcart()
+		]);
+
+		return Product::checkList($rows);
+
+	}
 
 }
 

@@ -4,6 +4,7 @@ use \Hcode\Page;
 use \Hcode\Model\Product;
 use \Hcode\Model\Category;
 use \Hcode\Model\User;
+use \Hcode\Model\Cart;
 
 $app->get('/', function() {
     
@@ -13,8 +14,7 @@ $app->get('/', function() {
 
 	$page->setTpl("index",[
 		'products'=>Product::checkList($products)
-	]);	
-	
+	]);		
 });
 
 $app->get("/categories/:idcategory", function($idcategory){
@@ -63,10 +63,45 @@ $app->get("/products/:desurl", function($desurl){
 
 $app->get("/cart", function(){
 
+	$cart = Cart::getFromSession();
+
 	$page = new Page();
 
-	$page->setTpl("cart");
+	$page->setTpl("cart",[
+		'cart'=>$cart->getValues(),
+		'products'=>$cart->getProducts()
+	]);
 
-})
+});
+
+$app->get("/cart/:idproduct/add", function($idproduct){
+
+	$product = new Product();
+
+	$product->get((int)$idproduct);
+
+	$cart = Cart::getFromSession();
+
+	$cart->addProduct($product);
+
+	header("Location: /php/ecommerce/cart");
+	exit;
+
+});
+
+$app->get("/cart/:idproduct/remove", function($idproduct){
+
+	$product = new Product();
+
+	$product->get((int)$idproduct);
+
+	$cart = Cart::getFromSession();
+
+	$cart->removeProduct($product, true);
+
+	header("Location: /php/ecommerce/cart");
+	exit;
+
+});
 
 ?>
