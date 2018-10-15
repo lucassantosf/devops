@@ -5,6 +5,7 @@ namespace Hcode\Model;
 use \Hcode\DB\Sql;
 use \Hcode\Model;
 use \Hcode\Model\User;
+use \Hcode\Model\Product;
 
 class Cart extends Model {
 
@@ -106,48 +107,47 @@ class Cart extends Model {
 
 		$sql = new Sql();
 
-		$sql->query("insert into tb_cartsproducts (idcart, idproduct) values(:idcart, :idproduct)",[
+		$sql->query("insert into tb_cartsproducts(idcart, idproduct) values(:idcart, :idproduct)",[
 			':idcart'=>$this->getidcart(),
 			':idproduct'=>$product->getidproduct()
 		]);
 	}
 
 	public function removeProduct(Product $product, $all = false){
-
-		$sql = new Sql();
-
-		if($all){
-
-			$sql->query("update tb_cartsproducts set dtremoved = now() where idcart = :idcart and idprodut = :idprodut and dtremoved is null",[
-				':idcart'=>$this->getidcart(),
-				':idprodut'=>$product->getidproduct()
-			]);
-		}else{
-
-			$sql->query("update tb_cartsproducts set dtremoved = now() where idcart = :idcart and idprodut = :idprodut and dtremoved is null limit 1",[
-				':idcart'=>$this->getidcart(),
-				':idprodut'=>$product->getidproduct()
-			]);
-		}
+ 
+        $sql = new Sql();
+ 
+        if ($all){
+ 
+            $sql->query("UPDATE tb_cartsproducts SET dtremoved = NOW() WHERE idcart = :idcart AND idproduct = :idproduct AND dtremoved IS NULL",[
+                ':idcart'=>$this->getidcart(),
+                ':idproduct'=>$product->getidproduct()
+            ]);
+ 
+        }else{
+ 
+            $sql->query("UPDATE tb_cartsproducts SET dtremoved = NOW() WHERE idcart = :idcart AND idproduct = :idproduct AND dtremoved IS NULL LIMIT 1",[
+                ':idcart'=>$this->getidcart(),
+                ':idproduct'=>$product->getidproduct()
+            ]);
+        }
+ 
 	}
 
 	public function getProducts(){
-
-		$sql = new Sql();
-
-		$rows = $sql->select("
-			select b.idproduct, b.desproduct, b.vlprice, b.vlwidth, b.vlheight, b.vllenght, b.weight, b.desurl, count(*) as nrqtd, sum(b.vlprice) as vltotal
-			from tb_cartsproducts a 
-			inner join tb_products b on a.idprodut = b.idprodut 
-			where a.idcart = :idcart and a.dtremoved is null 
-			group by b.idproduct, b.desproduct, b.vlprice, b.vlwidth, b.vlheight, b.vllenght, b.weight, b.desurl
-			order by b.desproduct
-		",[
-			':idcart'=>$this->getidcart()
-		]);
-
-		return Product::checkList($rows);
-
+	     
+	     $sql = new Sql();
+	     $rows = $sql->select("
+	         SELECT b.idproduct,b.desproduct,b.vlprice,b.vlwidth,b.vlheight,b.vllength,b.vlweight,b.desurl,
+	         COUNT(*) AS nrqtd,SUM(b.vlprice) as vltotal
+	         FROM tb_cartsproducts a 
+	         INNER JOIN tb_products b USING (idproduct) 
+	         WHERE a.idcart = :idcart AND a.dtremoved IS NULL
+	         GROUP BY b.idproduct,b.desproduct,b.vlprice,b.vlwidth,b.vlheight,b.vllength,b.vlweight,b.desurl
+	         ORDER BY b.desproduct", [
+	            ":idcart"=>$this->getidcart()
+	    ]);
+	    return Product::checkList($rows);
 	}
 
 }
