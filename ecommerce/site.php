@@ -69,7 +69,7 @@ $app->get("/cart", function(){
 
 	$page->setTpl("cart",[
 		'cart'=>$cart->getValues(),
-		'products'=>$cart->getProduct()
+		'products'=>$cart->getProducts()
 	]);
 
 });
@@ -103,7 +103,7 @@ $app->get("/cart/:idproduct/minus", function($idproduct){
 
 	$cart = Cart::getFromSession();
 
-	$cart->removeProduct($product, true);
+	$cart->removeProduct($product);
 
 	header("Location: /php/ecommerce/cart");
 	exit;
