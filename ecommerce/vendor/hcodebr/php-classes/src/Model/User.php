@@ -20,7 +20,6 @@ class User extends Model {
 		}
 
 		return $user;
-
 	}
 
 	public static function checkLogin($inadmin = true){
@@ -37,7 +36,7 @@ class User extends Model {
 		}else{
 
 			if($inadmin === true && (bool)$_SESSION[User::SESSION]['inadmin'] === true){
-
+	
 				return true;
 
 			}else if($inadmin === false){
@@ -45,11 +44,11 @@ class User extends Model {
 				return true;
 
 			}else{
+				
 				return false;
+			
 			}
-
 		}
-
 	}
 
 	public static function login($login, $password){
@@ -86,7 +85,6 @@ class User extends Model {
 			header("Location: /php/ecommerce/admin/login");
 			exit;
 		}
-
 	}
 
 	public static function verifyLogin($inadmin = true){
@@ -96,13 +94,11 @@ class User extends Model {
 			header("Location: /php/ecommerce/admin/login");
 			exit;
 		}
-
 	}
 
 	public static function logout(){
 
 		$_SESSION[User::SESSION] = NULL;
-
 	}
 
 	public static function listAll(){
@@ -110,9 +106,7 @@ class User extends Model {
 		$sql = new Sql();
 
 		return $sql->select("select * from tb_users a INNER JOIN tb_persons b USING(idperson) order by desperson");
-
 	}
-
 
 	public function save(){
 
@@ -130,7 +124,6 @@ class User extends Model {
 		$this->setData($results[0]);
 	}
 
-
 	public function get($iduser){
 
 		$sql = new Sql();
@@ -140,7 +133,6 @@ class User extends Model {
 		));
 
 		$this->setData($results[0]);
-
 	}
 
 	public function update(){
@@ -158,7 +150,6 @@ class User extends Model {
 		));
 
 		$this->setData($results[0]);
-
 	}
 
 	public function delete(){
@@ -168,7 +159,6 @@ class User extends Model {
 		$sql->query("CALL sp_users_delete(:iduser)", array(
 			":iduser"=>$this->getiduser()
 		));
-
 	}
 
 	public static function getForgot($email){
@@ -213,7 +203,6 @@ class User extends Model {
 			}
 
 		}
-
 	}
 
 	public static function validForgotDecrypt($code){
@@ -243,8 +232,6 @@ class User extends Model {
 
 			return $results[0];
 		}
-
-
 	}
 
 	public static function setForgotUsed($idrecovery){
@@ -254,7 +241,6 @@ class User extends Model {
 		$sql->query("UPDATE tB_userspasswordsrecoveries set dtrecovery = NOW() where idrecovery = :idrecovery",array(
 			":idrecovery"=>$idrecovery
 		));
-
 	}
 
 	public function setPassword($password){

@@ -45,15 +45,12 @@ class Cart extends Model {
 		}
 
 		return $cart;
-
 	}
 
 	
 	public function setToSession(){
 
 		$_SESSION[Cart::SESSION] = $this->getValues();
-
-
 	}
 
 
@@ -68,7 +65,6 @@ class Cart extends Model {
 		if(count($results) > 0){
 			$this->setData($results[0]);
 		}
-
 	}
 
 
@@ -83,8 +79,6 @@ class Cart extends Model {
 		if(count($results) > 0){
 			$this->setData($results[0]);
 		}
-		
-
 	}
 
 	public function save(){
@@ -105,11 +99,11 @@ class Cart extends Model {
 
 	public function addProduct(Product $product){
 
-		$sql = new Sql();
+		$sql = new Sql();	
 
-		$sql->query("insert into tb_cartsproducts(idcart, idproduct) values(:idcart, :idproduct)",[
-			':idcart'=>$this->getidcart(),
-			':idproduct'=>$product->getidproduct()
+		$sql->query("SET FOREIGN_KEY_CHECKS = 0; INSERT INTO tb_cartsproducts (idcart, idproduct) VALUES(:idcart, :idproduct)",[
+			':idcart'=>(int)$this->getidcart(),
+			':idproduct'=>(int)$product->getidproduct()
 		]);
 	}
 
@@ -130,8 +124,7 @@ class Cart extends Model {
                 ':idcart'=>$this->getidcart(),
                 ':idproduct'=>$product->getidproduct()
             ]);
-        }
- 
+        } 
 	}
 
 	public function getProducts(){
@@ -146,8 +139,7 @@ class Cart extends Model {
 	         GROUP BY b.idproduct, b.desproduct, b.vlprice, b.vlwidth, b.vlheight, b.vllength, b.vlweight, b.desurl
 	         ORDER BY b.desproduct", [
 	            ":idcart"=>$this->getidcart()
-	    ]));
-	    
+	    ]));	    
 	}
 
 }
