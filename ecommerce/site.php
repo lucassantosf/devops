@@ -57,21 +57,21 @@ $app->get("/products/:desurl", function($desurl){
 		'product'=>$product->getValues(),
 		'categories'=>$product->getCategories()
 	]);
-
-
 });
 
 $app->get("/cart", function(){
 
 	$cart = Cart::getFromSession();
 
+	$cart->checkZipCode();
+
 	$page = new Page();
 
 	$page->setTpl("cart",[
 		'cart'=>$cart->getValues(),
-		'products'=>$cart->getProducts()
+		'products'=>$cart->getProducts(),
+		'error'=>Cart::getMsgError()
 	]);
-
 });
 
 $app->get("/cart/:idproduct/add", function($idproduct){
@@ -90,7 +90,6 @@ $app->get("/cart/:idproduct/add", function($idproduct){
 
 	header("Location: /php/ecommerce/cart");
 	exit;
-
 });
 
 $app->get("/cart/:idproduct/minus", function($idproduct){
@@ -105,7 +104,6 @@ $app->get("/cart/:idproduct/minus", function($idproduct){
 
 	header("Location: /php/ecommerce/cart");
 	exit;
-
 });
 
 $app->get("/cart/:idproduct/remove", function($idproduct){
@@ -120,7 +118,16 @@ $app->get("/cart/:idproduct/remove", function($idproduct){
 
 	header("Location: /php/ecommerce/cart");
 	exit;
+});
 
+$app->post("/cart/freight", function(){
+
+	$cart = Cart::getFromSession();
+
+	$cart->setFreight($_POST['zipcode']);
+
+	header("Location: /php/ecommerce/cart");
+	exit;
 });
 
 ?>
