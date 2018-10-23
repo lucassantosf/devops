@@ -105,7 +105,7 @@ class Cart extends Model {
 			':idproduct'=>(int)$product->getidproduct()
 		]);
 
-		$this->updateFreight();
+		$this->getCalculateTotal();
 	}
 
 	public function removeProduct(Product $product, $all = false){
@@ -127,7 +127,7 @@ class Cart extends Model {
             ]);
         } 
 
-        $this->updateFreight();
+        $this->getCalculateTotal();
 	}
 
 	public function getProducts(){
@@ -150,10 +150,10 @@ class Cart extends Model {
 		$sql = new Sql();
 
 		$results = $sql->select("
-			select sum(vlprice) as vlprice, sum(vlwidth) as vlwidth, sum(vlheight) as vlheight, sum(vllength) as vllength, sum(vlweight) as vlweight, count(*) as nrqtd
-			from tb_products a
-			inner join tb_cartsproducts b on a.idproduct = b.idproduct
-			where b.idcart = :idcart and dtremoved is null;",[
+			select sum(vlprice) as vlprice, (vlwidth) as vlwidth, sum(vlheight) as vlheight, sum(vllength) as vllength, sum(vlweight) as vlweight, count(*) as nrqtd
+				from tb_products a
+				inner join tb_cartsproducts b on a.idproduct = b.idproduct
+				where b.idcart = :idcart and dtremoved is null",[
 			':idcart'=>$this->getidcart()
 		]);
 
@@ -200,12 +200,16 @@ class Cart extends Model {
 			if($result->MsgErro != ''){
 
 				Cart::setMsgError($result->MsgErro);
+
 			}else{
+
 				Cart::clearMsgError();
+			
 			}
 
 			$this->setnrdays($result->PrazoEntrega);
-			$this->setvlfreight(Cart::formatformatValueToDecimal($result->Valor));
+			$this->setvlfreight($result->Valor);
+			//$this->setvlfreight(Cart::formatformatValueToDecimal($result->Valor));
 			$this->setdeszipcode($nrzipcode);
 			
 			$this->save();
@@ -228,13 +232,12 @@ class Cart extends Model {
 	   }
 	}
 
-	public static function updateFreight(){
+	public function updateFreight(){
 
-		//if($this->getdeszipode() != ''){
+		if($this->getdeszipcode() != ''){
 
-		//	$this->setFreight($this->getdeszipode());
-
-		//}
+			$this->setFreight($this->getdeszipcode());
+		}
 	} 
 
 	public static function formatValueToDecimal($value):float{
@@ -256,10 +259,30 @@ class Cart extends Model {
 		Cart::clearMsgError();
 
 		return $msg;
+
+		//return (isset($_SESSION[Cart::SESSION_ERROR])) ? $_SESSION[Cart::SESSION_ERROR] : "";
 	}
 
 	public static function clearMsgError(){
 		$_SESSION[Cart::SESSION_ERROR] = NULL;
+	}
+
+	public function getValues(){
+
+		$this->getCalculateTotal();
+
+		return parent::getValues();
+	}
+
+	public function getCalculateTotal(){
+
+		$this->updateFreight();
+
+		$totals = $this->getProductsTotals();
+
+		$this->setvlsubtotal($totals['vlprice']);
+		$this->setvltotal($totals['vlprice']+ $this->getvlfreight());
+
 	}
 	
 
