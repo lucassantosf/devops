@@ -57,8 +57,8 @@ class User extends Model {
 
 		$sql = new Sql();
 
-		$results = $sql->select("select * from tb_users where deslogin = :LOGIN", array(
-			":LOGIN"=>$login
+		$results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b ON a.idperson = b.idperson WHERE a.deslogin = :LOGIN", array(
+		 	":LOGIN"=>$login
 		));
 
 		if(count($results) === 0){
@@ -75,7 +75,7 @@ class User extends Model {
 			
 			$user = new User();		
 
-			$data['desperson'] = utf8_encode($data['desperson']);
+			//$data['desperson'] = $data['desperson'];
 
 			$user->setData($data);
 
@@ -122,7 +122,7 @@ class User extends Model {
 		$results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
 			":desperson"=>utf8_decode($this->getdesperson()),
 			":deslogin"=>$this->getdeslogin(),
-			":despassword"=>User::getPasswordHash($this->getdespassword()),
+			":despassword"=>$this->getdespassword(),
 			":desemail"=>$this->getdesemail(),
 			":nrphone"=>$this->getnrphone(),
 			":inadmin"=>$this->getinadmin()
@@ -154,7 +154,7 @@ class User extends Model {
 			"iduser"=>$this->getiduser(),
 			":desperson"=>utf8_decode($this->getdesperson()),
 			":deslogin"=>$this->getdeslogin(),
-			":despassword"=>User::getPasswordHash($this->getdespassword()),
+			":despassword"=>$this->getdespassword(),
 			":desemail"=>$this->getdesemail(),
 			":nrphone"=>$this->getnrphone(),
 			":inadmin"=>$this->getinadmin()
@@ -172,7 +172,7 @@ class User extends Model {
 		));
 	}
 
-	public static function getForgot($email){
+	public static function getForgot($email, $inadmin = true){
 
 		$sql = new Sql();
 
@@ -201,8 +201,17 @@ class User extends Model {
 				
 				$code =base64_encode(openssl_encrypt(MCRYPT_RIJNDAEL_128, User::SECRET, $dataRecovery["idrecovery"],MCRYPT_MODE_ECB));
 
-				$link = "http://localhost:8080/php/ecommerce/admin/forgot/reset?code=$code";
+				if($inadmin === true){
 
+					$link = "http://localhost:8080/php/ecommerce/admin/forgot/reset?code=$code";
+
+				}else{
+
+					$link = "http://localhost:8080/php/ecommerce/forgot/reset?code=$code";
+
+				}
+
+				
 				$mailer = new Mailer($data["desemail"], $data["desperson"], "Redefinir senha da L Store", "forgot", array(
 					"name"=>$data["desperson"],
 					"link"=>$link
@@ -290,10 +299,14 @@ class User extends Model {
 
 		$msg = (isset($_SESSION[User::ERROR_REGISTER]) && $_SESSION[User::ERROR_REGISTER]) ? $_SESSION[User::ERROR_REGISTER] : "";
 
-		User::clearError();
+		User::clearErrorRegister();
 
 		return $msg;
 
+	}
+
+	public static function clearErrorRegister(){
+		$_SESSION[User::ERROR_REGISTER] = NULL;
 	}
 
 	public static function getPasswordHash($password){
@@ -301,6 +314,17 @@ class User extends Model {
 		return password_hash($password, PASSWORD_DEFAULT,[
 			'cost'=>12
 		]);
+	}
+
+	public static function checkLoginExist($login){
+
+		$sql = new Sql();
+
+		$results = $sql->select("select * from tb_users where deslogin = :deslogin", [
+			':deslogin'=>$login
+		]);
+
+		return (count($results) > 0);
 	}
 
 }

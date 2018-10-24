@@ -43,7 +43,7 @@ $app->get('/admin/logout', function(){
 	exit;
 });
 
-$app->get("/admin/gorgot/reset", function(){
+$app->get("/admin/forgot/reset", function(){
 
 	$user = User::validForgotDecrypt($_GET["code"]);
 
