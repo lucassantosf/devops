@@ -6,6 +6,8 @@ use \Hcode\Model\Category;
 use \Hcode\Model\User;
 use \Hcode\Model\Cart;
 use \Hcode\Model\Address;
+use \Hcode\Model\Order;
+use \Hcode\Model\OrderStatus;
 
 $app->get('/', function() {
     
@@ -163,6 +165,7 @@ $app->get("/checkout", function(){
 	if(!$address->getdesstate()) $address->setdesstate('');
 	if(!$address->getdescountry()) $address->setdescountry('');
 	if(!$address->getdeszipcode()) $address->setdeszipcode('');
+	if(!$address->getdesnumber()) $address->setdesnumber('');
 	
 	$page = new Page();
 
@@ -221,6 +224,13 @@ $app->post("/checkout", function(){
 		exit;
 	}
 
+	if(!isset($_POST['desnumber']) || $_POST['desnumber'] === ''){
+
+		Address::setMsgError("Informe o número");
+		header("Location: /php/ecommerce/checkout");
+		exit;
+	}
+
 	$user = User::getFromSession();
 
 	$address = new Address();
@@ -232,7 +242,23 @@ $app->post("/checkout", function(){
 
 	$address->save();
 
-	header("Location: /php/ecommerce/order");
+	$cart = Cart::getFromSession();
+
+	$totals = $cart->getCalculateTotal();
+	
+	$order = new Order();
+
+	$order->setData([
+		'idcart'=>$cart->getidcart(),
+		'idaddress'=>$address->getidaddress(),
+		'iduser'=>$user->getiduser(),
+		'idstatus'=>OrderStatus::EM_ABERTO,
+		'vltotal'=>$cart->getvltotal()
+	]);
+
+	$order->save();
+
+	header("Location: /php/ecommerce/order/".$order->getidorder());
 
 	exit;
 
@@ -454,6 +480,34 @@ $app->post("/profile", function(){
 	header("Location: /php/ecommerce/profile");
 
 	exit;
+
+});
+
+$app->get("/order/:idorder", function($idorder){
+
+	User::verifyLogin(false);
+
+	$order = new Order();
+
+	$order->get((int)$idorder);
+
+	$page = new Page();
+
+	$page->setTpl("payment", [
+		'order'=>$order->getValues()
+	]);
+
+});
+
+$app->post("/order/:idorder", function($idorder){
+
+	
+
+});
+
+$app->get("/boleto/:idorder", function($idorder){
+
+	
 
 });
 

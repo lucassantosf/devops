@@ -87,7 +87,6 @@ class User extends Model {
 		}else{
 			throw new \Exception("Usuário inexistente ou senha inválida");			
 		}
-
 	}
 
 	public static function verifyLogin($inadmin = true){
@@ -121,7 +120,7 @@ class User extends Model {
 		$sql = new Sql();
 
 		$results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
-			":desperson"=>utf8_decode($this->getdesperson()),
+			":desperson"=>$this->getdesperson(),
 			":deslogin"=>$this->getdeslogin(),
 			":despassword"=>$this->getdespassword(),
 			":desemail"=>$this->getdesemail(),
