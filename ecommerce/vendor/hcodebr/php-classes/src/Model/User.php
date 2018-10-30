@@ -288,7 +288,7 @@ class User extends Model {
 	}
 
 	public static function clearError(){
-		$_SESSION[User::SUCCESS] = NULL;
+		$_SESSION[User::ERROR] = NULL;
 	}
 
 	public static function setSuccess($msg){

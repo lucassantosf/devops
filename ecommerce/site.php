@@ -625,6 +625,8 @@ $app->post("/profile/change-password", function(){
 
 	User::verifyLogin(false);
 
+	$user = User::getFromSession();
+
 	if(!isset($_POST['current_pass']) || $_POST['current_pass'] === ''){
 
 		User::setError("Digite a senha atual");
@@ -649,6 +651,13 @@ $app->post("/profile/change-password", function(){
 
 	}	
 
+	if(!$_POST['current_pass'] === $user->getdespassword() ){
+
+		User::setError("Sua senha está invalida");
+		header("Location: /php/ecommerce/profile/change-password");
+		exit;		
+	}
+
 	if($_POST['current_pass'] === $_POST['new_pass']){
 
 		User::setError("Sua nova senha deve ser diferente da atual");
@@ -656,29 +665,19 @@ $app->post("/profile/change-password", function(){
 		exit;
 
 	}
-
-	$user = User::getFromSession();
-
-	var_dump($user->getdespassword(), $_POST['current_pass']); exit;
-
-	if(!password_verify($_POST['current_pass'], $user->getdespassword())){
-
-		User::setError("Sua senha está invalida");
-		header("Location: /php/ecommerce/profile/change-password");
-		exit;		
-	}
-	/*if ($_POST['new_pass'] != $_POST['new_pass_confirm']) {
+	
+	if ($_POST['new_pass'] != $_POST['new_pass_confirm']) {
  
 	 	User::setError("A senha de confirmação deve ser igual a nova senha.");
 	 	header("Location: /php/ecommerce/profile/change-password");
 	 	exit;
-	}*/
+	}
 
 	$user->setdespassword($_POST['new_pass']);
 
 	$user->update();
 
-	//$_SESSION[User::SESSION] = $user->getValues();
+	$_SESSION[User::SESSION] = $user->getValues();
 
 	User::setSuccess("Senha alterada com sucesso");
 
