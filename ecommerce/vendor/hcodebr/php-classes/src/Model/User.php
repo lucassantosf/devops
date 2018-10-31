@@ -72,6 +72,9 @@ class User extends Model {
 		$data = $results[0];
 
 		//password_verify($password, $data["despassword"]){
+		
+		//var_dump($password, $data["despassword"]); exit();
+
 		if($password === $data["despassword"]){
 			
 			$user = new User();		
@@ -135,9 +138,9 @@ class User extends Model {
 
 		$sql = new Sql();
 
-		$results = $sql->select("SELECT * from tb_users a INNER JOIN tb_persons b USING(idperson) where a.iduser = :iduser", array(
-			"iduser"=>$iduser
-		));
+		$results = $sql->select("SELECT * from tb_users a INNER JOIN tb_persons b USING(idperson) where a.iduser = :iduser", [
+			':iduser'=>$iduser
+		]);
 
 		$data = $results[0];
 
@@ -367,6 +370,57 @@ class User extends Model {
 
 	}
 
+	public static function getPage($page = 1, $itemsPerPage = 10){
+
+		$start = ($page-1) * $itemsPerPage;
+
+		$sql = new Sql();
+
+		$results = $sql->select("
+			select SQL_CALC_FOUND_ROWS *
+			from tb_users a 
+			INNER JOIN tb_persons b USING(idperson)
+			order by b.desperson
+			limit $start, $itemsPerPage;			
+		");
+
+		$resultTotal = $sql->select("select FOUND_ROWS() as nrtotal;");
+
+		return [
+			'data'=>$results,
+			'total'=>(int)$resultTotal[0]["nrtotal"],
+			'pages'=>ceil($resultTotal[0]["nrtotal"] / $itemsPerPage)
+		];
+	}
+
+	public static function getPageSearch($search, $page = 1, $itemsPerPage = 10){
+
+		$start = ($page-1) * $itemsPerPage;
+
+		$sql = new Sql();
+
+		$results = $sql->select("
+			select SQL_CALC_FOUND_ROWS *
+			from tb_users a 
+			INNER JOIN tb_persons b USING(idperson)
+			where b.desperson like :search or b.desemail = :search or a.deslogin LIKE :search
+			order by b.desperson
+			limit $start, $itemsPerPage;			
+		",[
+			':search'=>'%'.$search.'%'
+		]);
+
+		$resultTotal = $sql->select("select FOUND_ROWS() as nrtotal;");
+
+		return [
+			'data'=>$results,
+			'total'=>(int)$resultTotal[0]["nrtotal"],
+			'pages'=>ceil($resultTotal[0]["nrtotal"] / $itemsPerPage)
+		];
+
+	}
+
+	
 }
 
 ?>
