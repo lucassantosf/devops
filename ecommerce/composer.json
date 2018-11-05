@@ -1,9 +1,9 @@
 {
-    "name": "lucassantosf/ecommerce",
+    "name": "hcodebr/ecommerce",
     "authors": [
         {
-            "name": "Lucas Ferreira",
-            "email": "lf@lf.com.br"
+            "name": "Hcode Treinamentos",
+            "email": "suporte@hcode.com.br"
         }
     ],
     "require": {
@@ -13,7 +13,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Hcode\\": "vendor\\hcodebr\\php-classes\\src"
+            "": "vendor\\hcodebr\\php-classes\\src"
         }
     }
 }

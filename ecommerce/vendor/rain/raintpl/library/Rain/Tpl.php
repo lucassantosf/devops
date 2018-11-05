@@ -8,6 +8,14 @@ require_once 'Tpl/Exception.php';
 require_once 'Tpl/SyntaxException.php';
 require_once 'Tpl/NotFoundException.php';
 
+/**
+ *  RainTPL
+ *  --------
+ *  Realized by Federico Ulfo & maintained by the Rain Team
+ *  Distributed under GNU/LGPL 3 License
+ *
+ *  @version 3.0 Alpha milestone: https://github.com/rainphp/raintpl3/issues/milestones?with_issues=no
+ */
 class Tpl {
 
     // variables
