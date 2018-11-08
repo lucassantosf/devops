@@ -4,7 +4,7 @@ Segue em ordem de execução e alterações realizadas para o desenvolvimento do Eco
 
 1  - Modelagem inicial do projeto
 2  - Modalagem com procedures para crud de usuários
-3  - 
+3  - Script da procedure para recuperar senha de usuário
 4  -
 5  -
 6  -
