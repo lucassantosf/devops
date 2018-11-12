@@ -7,9 +7,13 @@ Segue em ordem de execução e alterações realizadas para o desenvolvimento do Eco
 3  - Script da procedure para recuperar senha de usuário
 4  - Script parar criar tb_categories - já existe na modelagem incial esta tabela
 5  - Criar procedure para manipular criação de categorias
-6  -
-7  - 
-8  -
+6  - Procedure para salvar produtos na área admin
+7  - Script para cadastrar alguns produtos
+8  - Script para criar tabela de relacionamento entre Produtos X Categorias
 9  -
 10 -
-
+11 -
+12 -
+13 -
+14 -
+15 -
