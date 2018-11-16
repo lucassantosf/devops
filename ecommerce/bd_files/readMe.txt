@@ -14,8 +14,8 @@ Segue em ordem de execução e alterações realizadas para o desenvolvimento do Eco
 9  - Script para alterar detalhes da tabela do carrinho de compras - tb_carts
 10 - Script criar procedure de salvar dados no carrinho de compras
 10.1 - Alterar a coluna dtremoved de NN para Null da tabela tb_cartsproducts
-11 -
-12 -
-13 -
-14 -
+11 - Script das alterações na tabela tb_address
+12 - Script para criar procedure de salvar endereços na tb_address
+13 - Script com alterações da tabela de pedidos
+14 - Script para criar procedure de salvar pedidos
 15 -
