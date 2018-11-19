@@ -330,6 +330,75 @@ class User extends Model{
 		$_SESSION[User::SUCCESS] = NULL;
 	}
 
+	public function getOrders(){
+
+		$sql = new Sql();
+
+		$results = $sql->select("
+			select * from 
+			tb_orders a 
+			inner join tb_ordersstatus b using(idstatus)
+			inner join tb_carts c using(idcart)
+			inner join tb_users d on d.iduser = a.iduser
+			inner join tb_addresses e using(idaddress)
+			inner join tb_persons f on f.idperson = d.idperson
+			 where a.iduser = :iduser",[
+			":iduser"=>$this->getiduser()
+		]);
+
+		return $results;
+	}
+
+	public static function getPage($page = 1, $itemsPerPage = 5){
+
+		$start = ($page - 1) * $itemsPerPage;
+
+		$sql = new Sql();
+
+		$results = $sql->select("
+			select SQL_CALC_FOUND_ROWS *
+			from tb_users a 
+			inner join tb_persons b USING(idperson) 
+			order by b.desperson
+			limit $start, $itemsPerPage;
+		");
+
+		$resultTotal = $sql->select("select found_rows() as nrtotal;");
+
+		return [
+			'data'=>$results,
+			'total'=>(int)$resultTotal[0]["nrtotal"],
+			'pages'=>ceil($resultTotal[0]["nrtotal"]/$itemsPerPage)
+		];
+	}
+
+	public static function getPageSearch($search, $page = 1, $itemsPerPage = 5){
+
+		$start = ($page - 1) * $itemsPerPage;
+
+		$sql = new Sql();
+
+		$results = $sql->select("
+			select SQL_CALC_FOUND_ROWS *
+			from tb_users a 
+			inner join tb_persons b USING(idperson) 
+			where b.desperson like :search or b.desemail = :search or a.deslogin like :search
+			order by b.desperson
+			limit $start, $itemsPerPage;
+		",[
+			':search'=>'%'.$search.'%'
+		]);
+
+		$resultTotal = $sql->select("select found_rows() as nrtotal;");
+
+		return [
+			'data'=>$results,
+			'total'=>(int)$resultTotal[0]["nrtotal"],
+			'pages'=>ceil($resultTotal[0]["nrtotal"]/$itemsPerPage)
+		];
+	}
+
+
 }
 
 ?>

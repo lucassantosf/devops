@@ -18,4 +18,5 @@ Segue em ordem de execução e alterações realizadas para o desenvolvimento do Eco
 12 - Script para criar procedure de salvar endereços na tb_address
 13 - Script com alterações da tabela de pedidos
 14 - Script para criar procedure de salvar pedidos
-15 -
+15 - Script para ajustar tabela de usuários para quando é feito exclusão, assim todos os registros referenciados são excluido sem nenhum problema
+16 - Script para alterar tabela de endereços para adicionar a coluna de número (Isto é necessário para integração com Pagseguro)
