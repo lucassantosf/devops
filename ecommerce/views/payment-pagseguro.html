@@ -1,0 +1,22 @@
+<h1>Teste PagSeguro</h1>
+<h1>Produtos</h1>
+{loop="$products"}
+<label>{$counter+1}-{$value.desproduct}</label>
+{/loop}
+<h2>Pedido</h2>
+:{$order.deszipcode}
+:{$order.desaddress}
+:{$order.desnumber}
+:{function="utf8_encode($order.descomplement)"}
+:{function="utf8_encode($order.desdistrict)"}
+:{function="utf8_encode($order.descity)"}
+:{function="utf8_encode($order.desstate)"}
+:{function="utf8_encode($order.descountry)"}
+<br>
+{$order.desperson}
+<br>
+{$phone.areacode}
+<br>
+{$phone.number}
+<br>
+{$order.desemail}
