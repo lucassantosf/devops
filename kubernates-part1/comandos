@@ -1,0 +1,20 @@
+-Inicializar serviço do Minikube
+
+minikube start --vm-driver=virtualbox
+
+-Principais Comandos kubectl
+
+kubectl get nodes (Listar os nós/redes)
+kubectl run nginx-pod --image=nginx:latest (Criar pod baseado em uma imagem)
+kubectl get pods --watch (Listar pods e acompanhar alterações de status)
+kubectl edit pod nginx-pod (Editar um pod pelo nome)
+kubectl delete pod nginx-pod (Apagar um pod pelo nome)
+kubectl apply -f pod.yml (Aplicar um arquivo .yml , criar serviços de forma declarativa)
+kubectl delete -f pod.yml (Deletar os serviços criados apartir de um arquivo .yml , deletar serviços de forma declarativa)
+kubectl exec -it <name> -- bash (Executar de forma iterativa um comando dentro do pod)
+kubectl get svc (Listar serviços)
+kubectl get services (Listar serviços)
+kubectl get nodes -o wide (Listar os nós com maiores informações)
+kubectl delete pods --all (Deletar todos os pods)
+kubectl delete svc --all (Deletar todos os services)
+kubectl get configmap (Listar configmaps)
