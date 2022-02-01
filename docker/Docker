@@ -1,7 +1,8 @@
-**Fazer um build no container pelo nome do service
-sudo docker stop pvm200 -t 0
-sudo docker rm pvm200
-sudo docker-compose -f production.yml up -d --no-deps --build pvm200
+Fazer build do container pelo nome do service
+
+sudo docker stop <name> -t 0
+sudo docker rm  <name>
+sudo docker-compose -f production.yml up -d --no-deps --build <name>
 
 Resumo:
 
@@ -57,11 +58,7 @@ Comandos relacionados ao docker-compose
 docker-compose build - Realiza o build dos serviços relacionados ao arquivo docker-compose.yml, assim como verifica a sua sintaxe.
 docker-compose up - Sobe todos os containers relacionados ao docker-compose, desde que o build já tenha sido executado.
 docker-compose down - Para todos os serviços em execução que estejam relacionados ao arquivo docker-compose.yml.
-
-
-
-
-
+  
 Aula 6
 
 Docker Compose .yml
