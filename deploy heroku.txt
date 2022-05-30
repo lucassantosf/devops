@@ -1,0 +1,49 @@
+/* entrar na pasta do seu projeto e fazer login no heroku web pelo comando */
+
+heroku login
+
+/* criar arquivo de configuração do heroku e deixar o conteudo, o arquivo tem que ficar na raiz do projeto */
+touch Procfile
+	->
+		web: vendor/bin/heroku-php-apache2 public/
+
+/* criar app com nome e dominio */
+heroku apps:create fut-agenda
+
+/* checar se a origin do heroku foi setado corretamente */
+git remote -v
+
+/* se apareceu a origin do heroku, jogue as coisas para o heroku via push para fazer a instalação do laravel */
+git push heroku master 
+
+/* agora precisa settar as variaveis de ambiente */
+/* no heroku web, vc pode ir ate o app, em seettings - Config Vars - reveal Config Vars */
+e settar APP_DEBUG, APP_KEY, APP_NAME, APP_ENV e APP_URL
+
+ou via commandos
+heroku config:add APP_NAME=FutAgenda
+
+
+/* criar banco de dados no keroku web */
+/* dentro do app, resources, pesquisar em add-on pelo tipo de banco : heroku postgrees, e criar  */
+no comando vc vai recuperar os dados de acesso do banco criado e vai retornar uma string onde vai ter estes dados 
+
+heroku pg:credentials:url 
+
+e setar cada variavel
+
+heroku config:add DB_CONNECTION=pgsql
+heroku config:add DB_HOST=ec2-52-5-247-46.compute-1.amazonaws.com
+heroku config:add DB_PORT=5432
+heroku config:add DB_DATABASE=dbj3b962sgtp0n
+heroku config:add DB_USERNAME=orrcrtdjzvgqis
+heroku config:add DB_PASSWORD=cecc0727eab0a18bf77e4359eec72613efcef910e8e297def8fd5f5fcfeb8f20 
+
+/* rodar os comandos do artisan para gerar as tabelas das migrations */
+/* primeiro conectar no server via linha de comandos */
+
+heroku run bash
+e depois
+php artisan migrate 
+ou tudo junto mesmo sem se conectar
+heroku run php artisan migrate

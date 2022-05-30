@@ -1,12 +1,8 @@
-Fazer build do container pelo nome do service
+Build container pelo nome do service
 
 sudo docker stop <name> -t 0
-sudo docker rm  <name>
+sudo docker rm <name>
 sudo docker-compose -f production.yml up -d --no-deps --build <name>
-
-Resumo:
-
-Segue a lista com os principais comandos utilizados durante o curso:
 
 Comandos relacionados às informações
 
