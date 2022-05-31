@@ -1,0 +1,10 @@
+kubectl get rs (Listar os replicasets)
+kubectl get replicasets (Listar os replicasets)
+
+kubectl get deployments (Listar os deployments)
+
+kubectl rollout history deployment <nginx-deployment> (Listar os deployments)
+kubectl apply -f nginx-deployment.yml --record=true (Editar o arquivo, e aplicar passando a flag para anotar a alteração, dps precisa indicar esta alteracao com a descrição)
+
+kubectl annotate deployment nginx-deployment kubernetes.io/change-cause="Definindo imagem com versao latest" (Deixar uma descrição para a ultima alteracao)
+kubectl rollout undo deployment nginx-deployment --to-revision=2 (De fato, ir para a versao de algum deployment especifico, na flag --to-revision é indicado qual)
