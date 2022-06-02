@@ -8,3 +8,13 @@ kubectl apply -f nginx-deployment.yml --record=true (Editar o arquivo, e aplicar
 
 kubectl annotate deployment nginx-deployment kubernetes.io/change-cause="Definindo imagem com versao latest" (Deixar uma descrição para a ultima alteracao)
 kubectl rollout undo deployment nginx-deployment --to-revision=2 (De fato, ir para a versao de algum deployment especifico, na flag --to-revision é indicado qual)
+
+Exemplos:
+kubectl annotate deployment portal-noticias-deployment kubernetes.io/change-cause="Criando portal de noticias v1"
+kubectl rollout history deployment portal-noticias-deployment
+
+kubectl annotate deployment sistema-noticias-deployment kubernetes.io/change-cause="Criando sistema de noticias v1"
+kubectl rollout history deployment sistema-noticias-deployment
+
+kubectl annotate deployment db-noticias-deployment kubernetes.io/change-cause="Criando db do sistema de noticias v1"
+kubectl rollout history deployment db-noticias-deployment
