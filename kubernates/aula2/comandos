@@ -18,3 +18,6 @@ kubectl rollout history deployment sistema-noticias-deployment
 
 kubectl annotate deployment db-noticias-deployment kubernetes.io/change-cause="Criando db do sistema de noticias v1"
 kubectl rollout history deployment db-noticias-deployment
+
+
+kubectl exec -it pod-volume --container nginx-container -- bash
