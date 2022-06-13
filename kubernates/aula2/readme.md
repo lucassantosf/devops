@@ -8,3 +8,7 @@ alterar para versoes especificas dos arquivos.
 
 Volumes
 Volumes possuem ciclos de vida independente dos containers. Porém são dependentes dos pods.
+
+
+StatefulSet
+Serve para persistir dados em volumes para os pods utilizarem

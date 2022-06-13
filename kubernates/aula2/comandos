@@ -21,3 +21,5 @@ kubectl rollout history deployment db-noticias-deployment
 
 
 kubectl exec -it pod-volume --container nginx-container -- bash
+
+kubectl get statefulsets
