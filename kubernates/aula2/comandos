@@ -25,3 +25,6 @@ kubectl exec -it pod-volume --container nginx-container -- bash
 kubectl get statefulsets
 
 kubectl get hpa
+
+minikube addons enable metrics-server
+bash stress.sh 0.001 > out.txt
