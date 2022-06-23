@@ -15,3 +15,5 @@ Serve para persistir dados em volumes para os pods utilizarem
 
 Probes
 Tornar visível ao Kubernetes que uma aplicação não está se comportando da maneira esperada.
+
+AWS Beanstalk
