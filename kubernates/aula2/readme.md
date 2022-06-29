@@ -17,3 +17,5 @@ Probes
 Tornar visível ao Kubernetes que uma aplicação não está se comportando da maneira esperada.
 
 AWS Beanstalk
+Nong/Nginx
+Teste de benchmarck
