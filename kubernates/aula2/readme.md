@@ -19,3 +19,4 @@ Tornar visível ao Kubernetes que uma aplicação não está se comportando da m
 AWS Beanstalk
 Nong/Nginx
 Teste de benchmarck
+Init Aws Lambda Serveless
