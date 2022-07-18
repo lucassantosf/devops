@@ -9,15 +9,8 @@ alterar para versoes especificas dos arquivos.
 Volumes
 Volumes possuem ciclos de vida independente dos containers. Porém são dependentes dos pods.
 
-
 StatefulSet
 Serve para persistir dados em volumes para os pods utilizarem
 
 Probes
 Tornar visível ao Kubernetes que uma aplicação não está se comportando da maneira esperada.
-
-AWS Beanstalk
-Nong/Nginx
-Teste de benchmarck
-Init Aws Lambda Serveless
-Lambda alura https://cursos.alura.com.br/course/serverless-aws-lambda
