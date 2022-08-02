@@ -14,3 +14,11 @@ Serve para persistir dados em volumes para os pods utilizarem
 
 Probes
 Tornar visível ao Kubernetes que uma aplicação não está se comportando da maneira esperada.
+
+crontab -e
+
+save as test.sh
+
+curl https://yetz.app/api/passo-a-passo -o myfile.txt
+
+* * * * * /usr/bin/sh /home/lucas/test.sh
