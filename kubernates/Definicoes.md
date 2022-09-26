@@ -36,16 +36,37 @@ Serve para organizar informações para configurar um determinado serviço, auxi
 
 # ReplicaSets
 
+A finalidade de um ReplicaSet é manter um conjunto estável de pods de réplica em execução a qualquer momento. Como tal, é frequentemente usado para garantir a disponibilidade de um número especificado de Pods idênticos. Caso algum falhe, este serviço gerencia a disponibilidade da quantidade de 
+replicas que desejamos do mesmo POD.
+
 # Deployments
+
+Também tem a mesma funcionalidade do Replicaset, mas vai auditar alterações dos arquivos yml, como fosse um 'Git', onde é possivel 
+alterar para versoes especificas do arquivo yml.
+Deployment nada mais é do que uma camada acima de um ReplicaSet. Então, quando nós definimos um Deployment, nós estamos, automaticamente, definindo um ReplicaSet
 
 # Volumes
 
+Volumes possuem ciclos de vida independente dos containers. Porém são dependentes dos pods.
+Um Pod é capaz de utilizar qualquer quantidade de tipos de volumes simultaneamente. Os tipos de volume efêmeros têm a mesma vida útil do pod, mas os volumes persistentes existem além da vida útil de um pod. Quando um pod deixa de existir, o Kubernetes destrói volumes efêmeros; no entanto, o Kubernetes não destrói volumes persistentes. Para qualquer tipo de volume em um determinado pod, os dados são preservados entre as reinicializações do contêiner.
+
 # StatefulSet
+***Serve para persistir dados em volumes para os pods utilizarem
 
 # Probes
+***Tornar visível ao Kubernetes que uma aplicação não está se comportando da maneira esperada.
 
 # Escalabilidade 
 Escalabilidade Vertical - Determinado recurso atingiu seu limite, e para aumentar, adquirimos um recurso com maior capacidade e que atenda aos requisitos. 
 Ex: EC2 atingir o limite de processamento e memória para os seus containers, o natural nesta escalabilidade seria adquirir uma instancia com maior limite de recursos.
 
 Escalabilidade Horizontal - Determinado recurso atingiu seu limite, e para aumentar, adquirimos um novo (do mesmo recurso, em termos de capacidade) e fazermos comunicar-se entre si, todos, em paralelo, e em conjunto.
+
+
+crontab -e
+
+save as test.sh
+
+curl https://yetz.app/api/passo-a-passo -o myfile.txt
+
+* * * * * /usr/bin/sh /home/lucas/test.sh
