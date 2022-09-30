@@ -8,8 +8,8 @@ var campanha_id;
 var cartao_id;
 
 export const options = {
-  vus: 1,
-  iterations: 1, 
+  vus: 10,
+  iterations: 10, 
 };
 
 const POST = (route,payload) => {
@@ -21,39 +21,27 @@ const GET = (route) => {
 }
 
 export default function () {
-  // check_campanha()
-  // check_document()
+  check_campanha()
+  check_document()
   login()
   me()
   cartoes()
   extrato()
 }
 
-// function check_campanha(){
-//   const payload = JSON.stringify({
-//     campanha: 'cards',
-//   });
+function check_campanha(){
+  const payload = JSON.stringify({campanha: 'DEVS'});
+  const res = POST('check-campanha',payload);
+  check(res, { 'campanha': (r) => r.status == 200 });
+  sleep(random())
+}
 
-//   const res = POST('check-campanha',payload);
-//   check(res, { 'campanha': (r) => r.status == 200 });
-// }
-
-// function check_document(){
-//   const url = 'https://sandbox.yetzpay.com.br/api/check-document';
-//   const payload = JSON.stringify({
-//     document: '',
-//     campanha: '',
-//   });
-
-//   const params = {
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//   };
-
-//   const res = http.post(url, payload, params);
-//   check(res, { 'document': (r) => r.status == 200 });
-// } 
+function check_document(){
+  const payload = JSON.stringify({document: '',campanha: 'DEVS'});
+  const res = POST('check-document', payload);
+  check(res, { 'document': (r) => r.status == 200 });
+  sleep(random())
+} 
 
 function login(){
   const payload = JSON.stringify({document: '', password: ''});
@@ -61,6 +49,7 @@ function login(){
   params.headers['Authorization'] = `Bearer ${res.json().access_token}` 
   campanha_id = res.json().campanhas[0].id
   check(res, { 'login': (r) => r.status == 200 });
+  sleep(random())
 } 
 
 function me(){
@@ -70,17 +59,30 @@ function me(){
 
 function cartoes(){
   const res = GET(`cartao?campanhas[0]=${campanha_id}`);
-  cartao_id = res.json()[0].id
+  cartao_id = res.json()[2].id
   check(res, { 'cartoes': (r) => r.status == 200 });
 } 
 
 function extrato(){
   var date = new Date();
-  var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-  firstDay = firstDay.toISOString().split('T')[0]
-  var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-  lastDay = lastDay.toISOString().split('T')[0]
+  var firstDay = first_day_month(date)
+  var lastDay = last_day_month(date)
 
   const res = GET(`extrato/${cartao_id}?start=${firstDay}&end=${lastDay}`);
   check(res, { 'extrato': (r) => r.status == 200 });
 } 
+
+function random(){
+  const value = Math.random() * (6 - 1) + 1;
+  return Math.floor(value)
+}
+
+function first_day_month(date){
+  var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+  return firstDay.toISOString().split('T')[0]
+}
+
+function last_day_month(date){
+  var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  return lastDay.toISOString().split('T')[0]
+}
