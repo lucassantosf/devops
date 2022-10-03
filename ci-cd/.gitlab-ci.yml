@@ -1,0 +1,26 @@
+stages:
+  - deploy
+
+deploy_prod:
+  stage: deploy
+  tags:
+    - tagnamed
+  only:
+    - master
+  before_script:
+    - apt-get update -y && apt-get install zip -y
+    - 'which ssh-agent || ( apt-get install openssh-client -y )'
+    - eval `ssh-agent -s`
+    - mkdir -p /home/gitlab-runner/.ssh
+    - chmod 700 /home/gitlab-runner/.ssh
+    - cp $KEY /home/gitlab-runner/.ssh/id_rsa
+    - chmod 600 /home/gitlab-runner/.ssh/id_rsa
+    - ssh-add /home/gitlab-runner/.ssh/id_rsa
+    - touch ~/.ssh/known_hosts
+    - echo "$DOMAIN_PROD" >> ~/.ssh/known_hosts
+  script:    
+    - ssh -o StrictHostKeyChecking=no -tt ubuntu@$DOMAIN_PROD "git -C $DIR fetch"
+    - ssh -o StrictHostKeyChecking=no -tt ubuntu@$DOMAIN_PROD "git -C $DIR reset --hard origin/master" 
+    - ssh -o StrictHostKeyChecking=no -tt ubuntu@$DOMAIN_PROD "sudo docker exec sandbox php artisan migrate"
+    - ssh -o StrictHostKeyChecking=no -tt ubuntu@$DOMAIN_PROD "sudo docker exec sandbox composer install"
+    - ssh -o StrictHostKeyChecking=no -tt ubuntu@$DOMAIN_PROD "sudo docker restart sandbox sandbox_scheduler sandbox_supervisor -t 0"
