@@ -69,34 +69,35 @@ function consult_cnpj(){
 }
 
 function register(){
-  // "tipo":"fisica",
-	// "document":"",
-	// "campanha":"",
-	// "name":"Dede", 
-	// "nome_cpf":"Fred",
-	// "nome_da_mae":"Maria",
-	// "apelido":"Neto",
-	// "genero":"MASCULINO",
-	// "data_nascimento":"1990-01-31",
-	// "phone_number":"5511981...", /** unique, gerar function p/ gerar unique */
-	// "email":"@", /** unique, gerar function p/ gerar unique */
-	// "password":"12345678",
-	// "password_confirmation":"12345678",
-	// "cep":"18078600",
-	// "nome":"Rua Juvencio das Flores",
-	// "numero":"50",
-	// "complemento":"",
-	// "bairro":"Jardim das Flores",
-	// "cidade":"Sorocaba",
-	// "estado":"SP",
-	// "sms_service":1,
-	// "aceita_sms":1,
-	// "aceita_whats":1,
-	// "aceita_email":1,
-	// "aceita_termos":1,
-	// "aceita_politicamente_exposta":1
-
-  const payload = JSON.stringify({document: '', password: ''});
+  const payload = {
+    "tipo":"fisica",
+    "document":"",
+    "campanha":"",
+    "name":"Dede", 
+    "nome_cpf":"Fred",
+    "nome_da_mae":"Maria",
+    "apelido":"Neto",
+    "genero":"MASCULINO",
+    "data_nascimento":"1990-01-31",
+    "phone_number":"5511981...", /** unique, gerar function p/ gerar unique */
+    "email":"@", /** unique, gerar function p/ gerar unique */
+    "password":"12345678",
+    "password_confirmation":"12345678",
+    "cep":"18078600",
+    "nome":"Rua Juvencio das Flores",
+    "numero":"50",
+    "complemento":"",
+    "bairro":"Jardim das Flores",
+    "cidade":"Sorocaba",
+    "estado":"SP",
+    "sms_service":1,
+    "aceita_sms":1,
+    "aceita_whats":1,
+    "aceita_email":1,
+    "aceita_termos":1,
+    "aceita_politicamente_exposta":1
+  }
+  const payload = JSON.stringify(payload);
   const res = POST('register', payload);
   check(res, { 'login': (r) => r.status == 200 });
   sleep(random())
