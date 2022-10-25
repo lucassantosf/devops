@@ -79,8 +79,8 @@ function register(){
     "apelido":"Neto",
     "genero":"MASCULINO",
     "data_nascimento":"1990-01-31",
-    "phone_number":"5511981...", /** unique, gerar function p/ gerar unique */
-    "email":"@", /** unique, gerar function p/ gerar unique */
+    "phone_number":generate_phone(),  
+    "email":generate_email(),  
     "password":"12345678",
     "password_confirmation":"12345678",
     "cep":"18078600",
@@ -146,3 +146,21 @@ function last_day_month(date){
   var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
   return lastDay.toISOString().split('T')[0]
 }
+
+function generate_email(){
+  var chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
+  var string = '';
+  for(var ii=0; ii<15; ii++){
+      string += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return `${string}@gmail.com`
+}
+
+function generate_phone(){
+  var chars = '0123456789';
+  var string = '';
+  for(var ii=0; ii<8; ii++){
+      string += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return `55159${string}`
+} 
