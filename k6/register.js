@@ -1,15 +1,18 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-const base_url = 'https://sandbox.domain.com.br/api/'
+const base_url = 'http://35.175../api/'
 var params = { headers: { 'Content-Type': 'application/json'}}
+var document = generate_document()
+var campanha = 'CARDS'
+var account  = '152417301'
 
 var campanha_id;
 var cartao_id;
 
 export const options = {
-  vus: 10,
-  iterations: 10, 
+  vus: 50,
+  iterations: 50, 
 };
 
 const POST = (route,payload) => {
@@ -20,37 +23,37 @@ const GET = (route) => {
   return http.get(`${base_url}${route}`, params)
 }
 
-export default function () {
+export default function () { 
   check_campanha()
   check_document()
-  // check_account() **todo
+  check_account()
   // validate_cpf()  **todo
   // consult_cnpj()  **todo
   // register()      **todo
-  login()
-  me()
-  cartoes()
-  extrato()
+  // login()
+  // me()
+  // cartoes()
+  // extrato()
 }
 
 function check_campanha(){
-  const payload = JSON.stringify({campanha: 'DEVS'});
+  const payload = JSON.stringify({campanha});
   const res = POST('check-campanha',payload);
   check(res, { 'campanha': (r) => r.status == 200 });
   sleep(random())
 }
 
 function check_document(){
-  const payload = JSON.stringify({document: '',campanha: 'DEVS'});
+  const payload = JSON.stringify({document,campanha});
   const res = POST('check-document', payload);
   check(res, { 'document': (r) => r.status == 200 });
   sleep(random())
 } 
 
 function check_account(){
-  const payload = JSON.stringify({document: '',campanha: 'DEVS', account: ''});
-  const res = POST('account-campanha', payload);
-  check(res, { 'document': (r) => r.status == 200 });
+  const payload = JSON.stringify({document,campanha,account});
+  const res = POST('check-account-campanha', payload);
+  check(res, { 'account': (r) => r.status == 200 });
   sleep(random())
 }
 
@@ -69,10 +72,10 @@ function consult_cnpj(){
 }
 
 function register(){
-  const payload = {
+  const data = {
     "tipo":"fisica",
-    "document":"",
-    "campanha":"",
+    "document":document,
+    "campanha":campanha,
     "name":"Dede", 
     "nome_cpf":"Fred",
     "nome_da_mae":"Maria",
@@ -97,14 +100,14 @@ function register(){
     "aceita_termos":1,
     "aceita_politicamente_exposta":1
   }
-  const payload = JSON.stringify(payload);
+  const payload = JSON.stringify(data);
   const res = POST('register', payload);
   check(res, { 'login': (r) => r.status == 200 });
   sleep(random())
 } 
 
 function login(){
-  const payload = JSON.stringify({document: '', password: ''});
+  const payload = JSON.stringify({document, password: ''});
   const res = POST('login', payload);
   params.headers['Authorization'] = `Bearer ${res.json().access_token}` 
   campanha_id = res.json().campanhas[0].id
@@ -147,11 +150,20 @@ function last_day_month(date){
   return lastDay.toISOString().split('T')[0]
 }
 
+function generate_document(){
+  var chars = '1234567890';
+  var string = '';
+  for(var ii=0; ii<11; ii++){
+      string += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return string
+}
+
 function generate_email(){
   var chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
   var string = '';
   for(var ii=0; ii<15; ii++){
-      string += chars[Math.floor(Math.random() * chars.length)];
+    string += chars[Math.floor(Math.random() * chars.length)];
   }
   return `${string}@gmail.com`
 }
