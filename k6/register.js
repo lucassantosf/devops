@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-const base_url = 'http://35.175../api/'
+const base_url = 'http://54.221/api/'
 var params = { headers: { 'Content-Type': 'application/json'}}
 var document = generate_document()
 var campanha = 'CARDS'
@@ -11,8 +11,8 @@ var campanha_id;
 var cartao_id;
 
 export const options = {
-  vus: 50,
-  iterations: 50, 
+  vus: 150,
+  iterations: 150, 
 };
 
 const POST = (route,payload) => {
@@ -27,13 +27,13 @@ export default function () {
   check_campanha()
   check_document()
   check_account()
-  // validate_cpf()  **todo
-  // consult_cnpj()  **todo
-  // register()      **todo
-  // login()
-  // me()
-  // cartoes()
-  // extrato()
+  validate_cpf()
+  consult_cnpj()  
+  register()
+  login()
+  me()
+  cartoes()
+  extrato()
 }
 
 function check_campanha(){
@@ -58,16 +58,16 @@ function check_account(){
 }
 
 function validate_cpf(){
-  const payload = JSON.stringify({document: '',campanha: 'DEVS', account: ''});
-  const res = POST('account-campanha', payload);
-  check(res, { 'document': (r) => r.status == 200 });
+  const payload = JSON.stringify({"document":"225","nome_da_mae":generate_name(),"nome_cpf":generate_name(),"data_nascimento":"1982-04-26"});
+  const res = POST('validate-documents', payload);
+  check(res, { 'validate_cpf': (r) => r.status == 200 });
   sleep(random())
 }
 
 function consult_cnpj(){
-  const payload = JSON.stringify({document: '',campanha: 'DEVS', account: ''});
-  const res = POST('account-campanha', payload);
-  check(res, { 'document': (r) => r.status == 200 });
+  const payload = JSON.stringify({document: '4382'});
+  const res = POST('consult-documents', payload);
+  check(res, { 'consult-documents': (r) => r.status == 200 });
   sleep(random())
 }
 
@@ -76,10 +76,10 @@ function register(){
     "tipo":"fisica",
     "document":document,
     "campanha":campanha,
-    "name":"Dede", 
-    "nome_cpf":"Fred",
-    "nome_da_mae":"Maria",
-    "apelido":"Neto",
+    "name":generate_name(), 
+    "nome_cpf":generate_name(),
+    "nome_da_mae":generate_name(),
+    "apelido":generate_name(),
     "genero":"MASCULINO",
     "data_nascimento":"1990-01-31",
     "phone_number":generate_phone(),  
@@ -102,12 +102,12 @@ function register(){
   }
   const payload = JSON.stringify(data);
   const res = POST('register', payload);
-  check(res, { 'login': (r) => r.status == 200 });
+  check(res, { 'register': (r) => r.status == 200 });
   sleep(random())
 } 
 
 function login(){
-  const payload = JSON.stringify({document, password: ''});
+  const payload = JSON.stringify({document, password: '123456'});
   const res = POST('login', payload);
   params.headers['Authorization'] = `Bearer ${res.json().access_token}` 
   campanha_id = res.json().campanhas[0].id
@@ -157,6 +157,20 @@ function generate_document(){
       string += chars[Math.floor(Math.random() * chars.length)];
   }
   return string
+}
+
+function generate_name(){
+  var chars = 'abcdefghijklmnopqrstuvwxyz';
+  var name = '';
+  for(var ii=0; ii<7; ii++){
+    name += chars[Math.floor(Math.random() * chars.length)];
+  }
+
+  var last_name = '';
+  for(var ii=0; ii<7; ii++){
+    last_name += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return `${name} ${last_name}`
 }
 
 function generate_email(){
