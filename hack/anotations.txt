@@ -7,3 +7,5 @@
 - R C E - remote code execution
 
 - reverse shell
+
+gobuster -u http://fakebank.com -w wordlist.txt dir
