@@ -77,7 +77,7 @@ def lambda_handler(event, context):
             myuuid = uuid.uuid4()
             myuuid = str(myuuid)
             # Generate payload string for query
-            p = '{"uuid": "'+myuuid+'","displayName": "App\\\Jobs\\\CargaJob","job": "Illuminate\\\Queue\\\CallQueuedHandler@call","maxTries": null,"maxExceptions": null,"failOnTimeout": false,"backoff": null,"timeout": null,"retryUntil": null,"data": {"commandName": "App\\\Jobs\\\DeleteFileS3Job","command": "O:17:\\"App\\\Jobs\\\DeleteFileS3Job\\":11:{s:12:\\"\\u0000*\\u0000file_name\\";N;s:28:\"'+file_name+'"\"job\\";N;s:10:\\"connection\\";N;s:5:\\"queue\\";N;s:15:\\"chainConnection\\";N;s:10:\\"chainQueue\\";N;s:19:\\"chainCatchCallbacks\\";N;s:5:\\"delay\\";N;s:11:\\"afterCommit\\";N;s:10:\\"middleware\\";a:0:{}s:7:\\"chained\\";a:0:{}}"}}'
+            p = '{"uuid": "'+myuuid+'","displayName": "App\\\Jobs\\\DeleteFileS3Job","job": "Illuminate\\\Queue\\\CallQueuedHandler@call","maxTries": null,"maxExceptions": null,"failOnTimeout": false,"backoff": null,"timeout": null,"retryUntil": null,"data": {"commandName": "App\\\Jobs\\\DeleteFileS3Job","command": "O:24:\\"App\\\Jobs\\\DeleteFileS3Job\\":12:{s:9:\\"\\u0000*\\u0000folder\\";s:8:\\"'+folder_t[0]+'\\";s:6:\\"\\u0000*\\u0000key\\";s:19:\\"'+folder_t[1]+'\\";s:3:\\"job\\";N;s:10:\\"connection\\";N;s:5:\\"queue\\";N;s:15:\\"chainConnection\\";N;s:10:\\"chainQueue\\";N;s:19:\\"chainCatchCallbacks\\";N;s:5:\\"delay\\";N;s:11:\\"afterCommit\\";N;s:10:\\"middleware\\";a:0:{}s:7:\\"chained\\";a:0:{}}"}}'
             # Generate timestamp for query
             ts = calendar.timegm(time.gmtime())  
             # Execute query
