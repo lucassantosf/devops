@@ -61,12 +61,3 @@ Escalabilidade Vertical - Determinado recurso atingiu seu limite, e para aumenta
 Ex: EC2 atingir o limite de processamento e memória para os seus containers, o natural nesta escalabilidade seria adquirir uma instancia com maior limite de recursos.
 
 Escalabilidade Horizontal - Determinado recurso atingiu seu limite, e para aumentar, adquirimos um novo (do mesmo recurso, em termos de capacidade) e fazermos comunicar-se entre si, todos, em paralelo, e em conjunto.
-
-
-crontab -e
-
-save as test.sh
-
-curl https://yetz.app/api/passo-a-passo -o myfile.txt
-
-* * * * * /usr/bin/sh /home/lucas/test.sh
