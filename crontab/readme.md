@@ -18,6 +18,7 @@ every minute
 
 every 12:01 AM
 1 0 * * * /usr/bin/sh /home/ubuntu/renew_certbot_certificates.sh
+1 0 * * * /usr/bin/sh /etc/cron.daily/renew_certbot_certificates.sh
 
 Crontab generator syntax:
 https://crontab.cronhub.io
