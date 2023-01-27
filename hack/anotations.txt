@@ -1,4 +1,4 @@
-- PORT SCANNING *.*.*.*  - IP
+- Conceito PORT SCANNING *.*.*.*  - IP através do nmap
     nmap *.*.*.*
     nmap -sV -p 22,80 *.*.*.* (com versionamento de softwares e portas especificas)
  
