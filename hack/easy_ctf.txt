@@ -2,13 +2,13 @@ All steps and concepts about CTF made on https://tryhackme.com/room/easyctf:
 
 1 - Start Machine on tryhackme 
 
-2 - Connect on VPN (download configuration file and connect via terminal)
+2 - Connect on VPN (download configuration file and connect via terminal) sudo openvpn lfsain.ovpn
 
 3 - Ping IP to check if is connected
 
-4 - PortScaning with 'nmap' command (check all ports ther are on server)
+4 - PortScaning with 'nmap' command (check all ports there are on server)
 
-    sudo nmap -sV -A 10.10.193.189 (return softwares version and ports used)
+    sudo nmap -sV -A 10.10.193.189 (return version softwares and ports used)
 
 5 - The PortScaning return ftp services is open anonymous, connect it
 
@@ -19,15 +19,17 @@ All steps and concepts about CTF made on https://tryhackme.com/room/easyctf:
     dirb http://10.10.193.189
 
 7 - The http://10.10.193.189 is a server for a apache, and contain a site on /simple
+
     It's a "CMS Made Simple"
 
-7 - Concept 'Exploit' - vunerabilitys documented and step-by-step to how hack anything , just seach for
+7 - Concept 'Exploit' - vulnerabilities documented and step-by-step to how hack anything , just seach for
 
     https://exploit-db.com
 
 8 - Seach for CMS Made Simple and get the CVE - code vunerability on exploit-db 
 
     cve-2019-9053
+
     https://www.exploit-db.com/exploits/46635
 
 9 - Copy the script and run on VirtualHost - Kali Linux
@@ -50,7 +52,7 @@ All steps and concepts about CTF made on https://tryhackme.com/room/easyctf:
 
     ssh mitch@10.10.193.189 -p 2222
 
-15 - Check the executables softwares can user have 
+15 - Check the executables softwares can user have acess
  
     sudo -l
 
@@ -61,3 +63,10 @@ All steps and concepts about CTF made on https://tryhackme.com/room/easyctf:
     sudo vim -c ':!/bin/sh'
 
 17 - Like root with 'whoami', get the user flag
+
+Concepts:
+
+#PortScaning - nmap
+#Dirb - list directories
+#Exploit - vunerabilities
+#Escalate Privileges

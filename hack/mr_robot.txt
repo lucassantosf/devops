@@ -19,6 +19,7 @@ All steps and concepts about CTF Mr Robot https://tryhackme.com/room/mrrobot
     443/tcp open   https
 
 4 - So, the return of before step, there is a service HTTP running at 80 port
+
     If open the browser with ip adress, it'll show a web page animation of Mr Robot
 
 5 - It's talked about Directories of Web Application on video class
@@ -134,3 +135,12 @@ All steps and concepts about CTF Mr Robot https://tryhackme.com/room/mrrobot
     I'll be the root user
 
 25 - On /root folder there is the file key-3-of-3.txt, just cat it 
+
+Concepts:
+
+#PortScaning
+#Dirg - list directories and paths
+#'Attack Brutal Force' on wp-login form
+#'Burp Suite' analises how wor
+#Reverse Shell / tune connection
+#Escalate Privileges
