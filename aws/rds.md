@@ -22,7 +22,7 @@
 
     Select 'Auto generate a password' or define/confirm one
 
-        After finally created, if auto genenare option selected, will be showed modal 'View Credential details' and password will be saw
+        After finally created, if auto generate option selected, will be showed modal 'View Credential details' and password will be saw
 
     -----------------------
 

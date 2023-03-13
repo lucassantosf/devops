@@ -4,7 +4,7 @@
 
     IPv4 CIDR 
 
-        10.0.0.0/24 - The range of IP adrress the VPC will have
+        10.0.0.0/16 - The range of IP adrress the VPC will have
 
     No IPv6 CIDR block
 
@@ -19,6 +19,8 @@
     Choice IPv4 CIDR block , like:
 
         10.0.1.0/24
+
+        10.0.2.0/24
 
 3. Create 'Internet Gateway' and attach to VPC - Give external access to VPC 'see' the 'Public Internet'
 
@@ -45,6 +47,8 @@
         Destination        Target
         10.0.0.0/16        local
         0.0.0.0/0          <select Internet Gateway>
+
+        tab 'Subnet associations' need be associated with one subnet created
 
     2.Configure the 'Private' Acess of VPC. 
 
