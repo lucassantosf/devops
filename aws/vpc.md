@@ -12,9 +12,9 @@
 
     Choose VPC
 
-    Search for a 'Zone' 
+    Search for 'Zone' 
  
-    Choice a 'Subnet Name' refering to the Zone letter
+    Choose a 'Subnet Name' refering to the Zone letter
 
     Choice IPv4 CIDR block , like:
 
@@ -38,7 +38,7 @@
 
         Select 'Enable' option
 
-5. Determine how requests from inside and outside will work, 'Route Table'
+5. 'Route Table' - Determine how requests from inside and outside will work
 
     1.Configure the 'Public'/'External' Acess of VPC. It allows APP the go to internet and download packages, eg.
 
@@ -80,8 +80,6 @@
             'HTTPS', port 443, My IP, describe it  
 
     3. After second SG was created , edit the RDS SG , and put on Inbound Roles, allowing port 3306 for SG of API
-
-ACl ???
 
 # Concepts:
 
