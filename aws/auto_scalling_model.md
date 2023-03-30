@@ -27,15 +27,35 @@
 
     Chose the Launch Template created on step before
 
+    Version: Latest (1)
+
     Network settings: select the VPC and all Subnets used
 
     Next;
 
-    Select the Load Balancer created and TargetGroup
+    Select option to Attach to a Load Balancer and Select the Load Balancer created and TargetGroup
+
+    Select Health Checker of ELB
 
     Next;
 
+    Select the Capacidade desejada
+
+    Capacidade minima
     
+    Capacidade maxima
+
+    Políticas de escalabilidade - opcional - Informar a Amazon qual é o critério de Escalar
+
+        Select Política de dimensionamento com monitoramento do objetivo 
+
+        Ex: usage of CPU , valor de destino 50 
+
+        As maquinas precisam 300 segundos de iniciar
+
+    Next;
+
+    Finish
 
 # Helpfuls :
 

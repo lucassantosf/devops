@@ -59,16 +59,7 @@
 
 6. Configure the Firewall of VPC, RDS, etc
 
-    1. For RDS, creating:
-
-        Name it
-
-        Select the VPC
-
-        'Inbound Roles' - what origin can from OUT to IN 
-            'Type Mysql', port 3306, My IP, describe it
-
-    2. For API , eg:
+    1. For API , eg:
 
         Name it
 
@@ -77,9 +68,17 @@
         'Inbound Roles' - what origin can from OUT to IN 
             'SSH', port 22, My IP, describe it  
             'HTTP', port 80, My IP, describe it  
-            'HTTPS', port 443, My IP, describe it  
+            'HTTPS', port 443, My IP, describe it 
 
-    3. After second SG was created , edit the RDS SG , and put on Inbound Roles, allowing port 3306 for SG of API
+    2. For RDS, creating:
+
+        Name it
+
+        Select the VPC
+
+        'Inbound Roles' - what origin can from OUT to IN for two cases:
+            'Type Mysql', port 3306, My IP, describe it
+            'Type Mysql', port 3306, SG of API, describe it
 
 # Concepts:
 
