@@ -48,14 +48,16 @@
         10.0.0.0/16        local
         0.0.0.0/0          <select Internet Gateway>
 
-        tab 'Subnet associations' need be associated with one subnet created
+        tab 'Subnet associations' need be associated with one subnet created - the subnet 1
 
     2.Configure the 'Private' Acess of VPC. 
 
         Create or select one, tab 'Routes' define two IP series:
 
         Destination        Target
-        10.0.0.0/16        local
+        10.0.0.0/16        local 
+
+        tab 'Subnet associations' need be associated with one subnet created - the subnet 2
 
 6. Configure the Firewall of VPC, RDS, etc
 

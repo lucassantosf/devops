@@ -15,7 +15,7 @@
 
     Key Pair: select the .pem used
 
-    Network settings: select the SG used
+    Network settings: select the SG_API used and subnet-1
 
     All others: default options
 
@@ -28,6 +28,8 @@
     Chose the Launch Template created on step before
 
     Version: Latest (1)
+
+    Next;
 
     Network settings: select the VPC and all Subnets used
 

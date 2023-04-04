@@ -26,6 +26,16 @@
     
     --------------
 
+    Select Security Group 
+
+    Create a new Security Group for only LoadBalancer usage
+
+        Allowing port HTTP 80/443* on 'Inbound Rules' for 0.0.0.0
+
+    And after, allow this SecurityGroup_ELB port 80 on SG inbound rules of API
+    
+    --------------
+
     Listeners : Add ports 80 and 443 (if you don't have domain or domain don't have SSL certificate, don't add this port for while)
 
     Select or Create 'Target Group Option'
@@ -50,16 +60,6 @@
 
                 Click on 'Include as pending below'
 
-    --------------
-    
-    Select Security Group 
-
-        Create a new Security Group for only LoadBalancer usage
-
-            Allowing port HTTP 80/443* on 'Inbound Rules'
-
-        And after, allow this SecurityGroup_ELB on SG inbound rules of API
-    
     --------------
     
     Finish the creation
