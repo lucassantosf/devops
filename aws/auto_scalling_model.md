@@ -1,11 +1,10 @@
 # Create a Auto Scalling Model with Load Balancer ELB :
 
-1. After you have a EC2 instance ready (api running, docker installed, etc),
-    create a Image of it on EC2 area
+1. After you have an EC2 instance ready (api running, docker installed, etc), create a Image of it on EC2 area
 
 2. Go to 'Launch Templates' left menu on EC2
 
-3. Create 'Launch Tempaltes' with:
+3. Create 'Launch Templates' with:
 
     Name;
 
@@ -25,7 +24,7 @@
 
     Give a Name;
 
-    Chose the Launch Template created on step before
+    Choose the Launch Template created on step before
 
     Version: Latest (1)
 
@@ -41,19 +40,19 @@
 
     Next;
 
-    Select the Capacidade desejada
+    Select the Desire Capacity of machine runnings
 
-    Capacidade minima
+    Capacity min
     
-    Capacidade maxima
+    Capacity max
 
-    Políticas de escalabilidade - opcional - Informar a Amazon qual é o critério de Escalar
+    Scalability Policies - Optional - Inform Amazon of the criteria for Scaling
 
-        Select Política de dimensionamento com monitoramento do objetivo 
+        Select Sizing policy with objective monitoring 
 
-        Ex: usage of CPU , valor de destino 50 
+        Eg: usage of CPU , targe value 50 
 
-        As maquinas precisam 300 segundos de iniciar
+        Machines need 300 seconds to start
 
     Next;
 

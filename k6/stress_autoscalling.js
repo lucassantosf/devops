@@ -1,12 +1,12 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-const base_url = 'https://domain.com.br/api/'
+const base_url = 'http://ELB-study-929388531.us-east-1.elb.amazonaws.com/api/'
 var params = { headers: { 'Content-Type': 'application/json'}}
 
 export const options = {
-  vus: 10,
-  iterations: 10, 
+  vus: 1000,
+  iterations: 1000, 
 };
 
 const POST = (route,payload) => {
@@ -24,11 +24,10 @@ export default function () {
 }
 
 function login(){
-  const payload = JSON.stringify({document: '', password: ''});
+  const payload = JSON.stringify({email: 'master@mail.com', password: 'password'});
   const res = POST('login', payload);
   params.headers['Authorization'] = `Bearer ${res.json().access_token}` 
   check(res, { 'login': (r) => r.status == 200 });
-  sleep(random())
 } 
 
 function me(){
