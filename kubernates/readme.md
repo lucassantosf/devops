@@ -51,10 +51,10 @@ Volumes possuem ciclos de vida independente dos containers. Porém são dependen
 Um Pod é capaz de utilizar qualquer quantidade de tipos de volumes simultaneamente. Os tipos de volume efêmeros têm a mesma vida útil do pod, mas os volumes persistentes existem além da vida útil de um pod. Quando um pod deixa de existir, o Kubernetes destrói volumes efêmeros; no entanto, o Kubernetes não destrói volumes persistentes. Para qualquer tipo de volume em um determinado pod, os dados são preservados entre as reinicializações do contêiner.
 
 # StatefulSet
-***Serve para persistir dados em volumes para os pods utilizarem
+Serve para persistir dados em volumes para os pods utilizarem
 
 # Probes
-***Tornar visível ao Kubernetes que uma aplicação não está se comportando da maneira esperada.
+Tornar visível ao Kubernetes que uma aplicação não está se comportando da maneira esperada.
 
 # Escalabilidade 
 Escalabilidade Vertical - Determinado recurso atingiu seu limite, e para aumentar, adquirimos um recurso com maior capacidade e que atenda aos requisitos. 
