@@ -1,14 +1,13 @@
+# IAM Roles
+    
+    Definir 4 IAM roles
 
-2 tipos de clusters - baseado em máquinas EC2 ou Fargate (Tasks)
+    -EC2 Instance Profile
+    -ECS Task Role
+    -ECS Role
+    -Autoscalling Role
 
-- Definir 4 IAM roles
-
-    EC2 Instance Profile
-    ECS Task Role
-    ECS Role
-    Autoscalling Role
-
-- Criar Cluster TIPO EC2 
+# Cluster TIPO EC2 
 
     Buscar por ECS no console
 
@@ -107,6 +106,36 @@
     Next;
 
     Load Balacing None
+
+# ECS com Application Load Balancer :
+
+    Serve para fazer o Mapeamento dinamico de portas entre as instancias ec2 
+
+    Create first a Load Balancer to use 
+
+    After, create again the cluster like fist step, but selecting the Load balancer created 
+
+# AutoScalling no serviço/tarefa :
+
+    Atualizar o cluster atual, na aba de 'Auto Scalling' da para ver que nao tem nada
+
+    Clicar em Update
+
+    Editar number of task de 4->2
+
+    Next;
+
+    Step 3 : Configurar AutoScalling
+
+        Configurar alarmes e parametros de IN e OUT de escalar
+
+# AutoScalling com Capacity Provider :
+
+    Somente disponivel para o cluster tipo EC2
+
+    Crie novamente um cluster 
+
+    
 
 # Helpfuls : 
 
