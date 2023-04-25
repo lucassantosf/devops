@@ -32,7 +32,9 @@ s
 
     Subnets;
 
+
     SG;
+
 
     Auto-assign public IP; ENABLED;
 
