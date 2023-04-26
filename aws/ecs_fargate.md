@@ -1,14 +1,14 @@
 # About
 
-    Serveless;
-    Define apenas memória e CPU da Task
+    Serveless;    
+    Set task memory and CPU only
     Follow the steps below:
 
 # Create Load Balancer :
 
     Go to EC2 area, on left menu 'Load Balancers', and create one giving it a name; 
 
-    On SG, can recieve requests from anywhere to port 80;
+    On SG, can receive requests from anywhere to port 80;
 
 # Create Cluster :
     
@@ -32,9 +32,7 @@ s
 
     Subnets;
 
-
     SG;
-
 
     Auto-assign public IP; ENABLED;
 
