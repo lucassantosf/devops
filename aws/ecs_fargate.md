@@ -45,6 +45,8 @@ https://www.youtube.com/playlist?list=PLMpVQWIR2lKcbHCV3eIIT5kpvyYP2I-tJ
 
 Criar ECR registry para workers
     fazer build,tag,push com os comandos do painel
+    O build pode ser feito apartir da raiz e colocando o contexto de onde ta o dockerfile no -f
+    docker build -t dh/myimage -f Dockerfile_test .
 Criar cluster (nao precisa criar outro,ja tem, pois o cluster da api e dos workers serao os mesmos no final)
 Criar (task definition com a imagem dos works da primeira etapa)
 Criar service com 1 desired task
