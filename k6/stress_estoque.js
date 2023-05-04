@@ -1,17 +1,18 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-const base_url = 'https://sandbox.yetz.app/api/'
+const base_url = 'https://.com.br/api/'
 var params = { headers: { 'Content-Type': 'application/json'}}
 var pedido ;
 
-var item_id ;
-var hash_code ;
-// var check_link;
+var roadmap = 2; //1-admin,2-plataforma,3-utilização
+var item_id = '';
+var hash_code;
+var check_hash;
 
 export const options = {
-  vus: 1,
-  iterations: 1, 
+  vus:  10,
+  duration: '10m', 
 };
 
 const POST = (route,payload) => {
@@ -23,16 +24,38 @@ const GET = (route) => {
 }
 
 export default function () {
-  login()
-  me()
-  get_produtos()
-  store_pedido()
-  get_pedido()
-  get_preview_url()
+  switch (roadmap) {
+    case 1: //fluxo admin
+      login()
+      me()
+      get_produtos()
+      store_pedido()
+      get_pedido()
+      get_preview_url()
+      check_url()
+      break;
+
+    case 2: //fluxo plataforma
+      params.headers['x-token-api'] = "" 
+      get_produtos()
+      store_pedido()
+      get_pedido()
+      get_preview_url()
+      check_url()
+      break;
+
+    case 3: //fluxo utilização
+      check_url_harded_code()
+      break;
+  
+    default:
+      throw('Error')
+  }
 }
 
 function login(){
-  const payload = JSON.stringify({email: 'master@cryptos.eti.br', password: '123456'});
+  sleep(random())
+  const payload = JSON.stringify({email: '', password: ''});
   const res = POST('login', payload);
   params.headers['Authorization'] = `Bearer ${res.json().access_token}` 
   check(res, { 'login': (r) => r.status == 200 });
@@ -40,6 +63,8 @@ function login(){
 
 function me(){
   const res = GET(`usuario/me`);
+  console.log('-------------User Name----------')
+  console.log(res.json().name)
   check(res, { 'me': (r) => r.status == 200 });
 } 
 
@@ -57,19 +82,25 @@ function store_pedido(){
   check(res, { 'store_pedido': (r) => r.status == 200 && pedido.status === 'PROCESSANDO'});
 } 
 
-function get_pedido(){
-  sleep(3)
-  const res = GET(`pedido/${pedido.id}`);  
-  var pedido_api = res.json()
+function get_pedido(){  
+  sleep(3) 
 
-  var itens = pedido_api.itens
+  while (item_id.length === 0){
+    var res = GET(`pedido/${pedido.id}`);  
+    var pedido_api = res.json()
 
-  item_id = itens[0].id
-  hash_code = itens[0].hash_code
+    var itens = pedido_api.itens
+
+    if(itens.length > 0){
+      item_id = itens[0].id
+      hash_code = itens[0].hash_code
+    }else{
+      sleep(1)
+    } 
+  } 
 
   console.log('---------------------------------------------------------------------------------')
   console.log(pedido_api.id,pedido_api.status)
-  console.log('---------------------------------------------------------------------------------')
 
   check(res, { 'get_pedido': (r) => r.status == 200 && ['AGUARDANDO','GERADO'].includes(pedido_api.status)} );
 } 
@@ -79,54 +110,65 @@ function get_preview_url(){
   const res = POST('pedido/preview-url', payload);
 
   var response = res.json() 
+  var link = response.link;
 
-  let link = response.link;
-  // link.toString();
-  // var lc = link.toString()
-  // let aaaa = lc.splice(".")
+  check_hash = link.substring(19)
 
   console.log('---------------------------------------------------------------------------------')
-  console.log(link.toString().splice("."))
-  console.log('---------------------------------------------------------------------------------')
-
-
-  console.log('---------------------------------------------------------------------------------')
-  console.log('as')
-  console.log('---------------------------------------------------------------------------------')
+  console.log(link)
 
   check(res, { 'get_preview_url': (r) => r.status == 200 && response.success });
-} 
-
-function get_preview_url(){
-  const payload = JSON.stringify({"pedido_item_id":item_id,"hash_code":hash_code});
-  const res = POST('pedido/preview-url', payload);
-
-  var response = res.json() 
-
-  let link = response.link;
-  // link.toString();
-  // var lc = link.toString()
-  // let aaaa = lc.splice(".")
-
-  console.log('---------------------------------------------------------------------------------')
-  console.log(link.toString().splice("."))
-  console.log('---------------------------------------------------------------------------------')
-
-
-  console.log('---------------------------------------------------------------------------------')
-  console.log('as')
-  console.log('---------------------------------------------------------------------------------')
-
-  check(res, { 'get_preview_url': (r) => r.status == 200 && response.success });
-} 
+}  
 
 function check_url(){
-  const payload = JSON.stringify({"hash_code":"X.X"});
+  const payload = JSON.stringify({"hash_code":check_hash});
   const res = POST('pedido/check-url', payload);
 
   var response = res.json() 
 
+  console.log('---------------------------------------------------------------------------------')
+  console.log(response.codes[0])
+
   check(res, { 'check_url': (r) => r.status == 200 && response.success });
 } 
 
+function check_url_harded_code(){
+  const hashs = [
+    'HxLqTR4LKcf3pcH.32476',
+    'LP5XMQgXAuvV4Yw.32474',
+    'zQf6Zn9l1tnondx.32473',
+    'PJBITBRLoFKqukT.32472',
+    '88PXxkqfhk8r38O.32471',
+    'qzFd5u4TNVBZfIZ.32470',
+    'd99ijZtFwBqgtPN.32468',
+    'ngJzTLXU869HIAk.32466',
+    'Sv8N975qOkIZGiR.32465',
+    'uzcWhvWno8wN6R6.32463',
+    'LUtjD8fNCprJWxD.32462',
+    'CGSbPtBFrdysaOO.32461',
+    '2b8Ed5KRZcAYrHb.32459',
+    'fEp1LT9SmT2etxs.32457',
+    'EPE7985zebL1PQv.32456',
+    'iZ2rPoIPfjhGwu4.32449',
+    'LgkdIRfg5ygaZVz.32451',
+    'KLfFZ3zav7zLJDQ.32450',
+    'wsRQcqdxR0UpEs9.32447',
+    'Nm99B9dAu0pGUm4.32448',
+  ]
+  sleep(random())
+  var hash = hashs[random(21)]
+  const payload = JSON.stringify({"hash_code":hash});
+  const res = POST('pedido/check-url', payload);
 
+  var response = res.json() 
+
+  console.log('---------------------------------------------------------------------------------')
+  console.log(hash,response.codes[0])
+
+  check(res, { 'check_url': (r) => r.status == 200 && response.success });
+} 
+
+function random(limit = 6){
+  const value = Math.random() * (limit - 1) + 1;
+  return Math.floor(value)
+}
