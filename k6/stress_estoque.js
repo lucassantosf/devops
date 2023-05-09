@@ -1,18 +1,19 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-const base_url = 'https://.com.br/api/'
+const base_url = 'https://'
 var params = { headers: { 'Content-Type': 'application/json'}}
 var pedido ;
 
-var roadmap = 2; //1-admin,2-plataforma,3-utilização
+var roadmap = 3; //1-admin,2-plataforma,3-utilização
 var item_id = '';
 var hash_code;
 var check_hash;
 
 export const options = {
   vus:  10,
-  duration: '10m', 
+  // iterations: 100, 
+  duration: '7m', 
 };
 
 const POST = (route,payload) => {
@@ -36,7 +37,7 @@ export default function () {
       break;
 
     case 2: //fluxo plataforma
-      params.headers['x-token-api'] = "" 
+      params.headers[''] = ""
       get_produtos()
       store_pedido()
       get_pedido()
@@ -83,7 +84,7 @@ function store_pedido(){
 } 
 
 function get_pedido(){  
-  sleep(3) 
+  sleep(4) 
 
   while (item_id.length === 0){
     var res = GET(`pedido/${pedido.id}`);  
@@ -155,8 +156,8 @@ function check_url_harded_code(){
     'wsRQcqdxR0UpEs9.32447',
     'Nm99B9dAu0pGUm4.32448',
   ]
-  sleep(random())
-  var hash = hashs[random(21)]
+  // sleep(random())
+  var hash = hashs[random(20)]
   const payload = JSON.stringify({"hash_code":hash});
   const res = POST('pedido/check-url', payload);
 
