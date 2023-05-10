@@ -2,6 +2,22 @@
 
     It's a service on AWS thats provides a repository to store code of projects on Cloud; 'Git',
 
+    Search for 'Code Commit' on AWS 
+
+    Repositories > Create Repository
+
+    Give Repository Name: 
+
+    Create;
+
+    -------
+
+    Connection steps:
+
+    Create your 'Git credentials' - https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-gc.html?icmpid=docs_acc_console_connect_np
+
+    Clone the repository - git clone https://git-codecommit.us-east-1.amazonaws.com/v1/repos/
+
 # About Code Build - CI Continous Integration
 
     The Code Build is effectively the service that compile source code, runs tests, and produces software packages that are ready to deploy in the process de CI-CD
