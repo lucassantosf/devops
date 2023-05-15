@@ -1,8 +1,8 @@
 # Code Commit - CI Continous Integration
 
-    About: It's a service on AWS thats provides a repository to store code of projects on Cloud; 'Git'.
+    About: It's a service on AWS that provides a 'Git' repository to store code of projects on Cloud; Like other famous services : Gitlab, GitHub, BitBucket.
 
-    Search for 'Code Commit' on AWS 
+    Search for 'Code Commit' on AWS
 
     Repositories > Create Repository
 
@@ -44,9 +44,9 @@
 
             Runtime(s): Standard
 
-            Image e Image version : Select always the lastest image for this runtime version
+            Image e Image version : Select always the latest image for this runtime version
 
-            Environment type: Linux
+            Environment type: Linux 
 
             Privileged: Check - Enable this flag if you want to build Docker images or want your builds to get elevated privileges
 

@@ -21,7 +21,7 @@
     Template Fargate;
     Name;
     AddContainer; (name, image, port mapping of ENI)
-s
+
 # Configure Task  on Cluster :
 
     Go to cluster created, and click tab 'Tasks' on button 'Run Task' to select the task created step before
@@ -35,7 +35,6 @@ s
     SG;
 
     Auto-assign public IP; ENABLED;
-
 
 # Helpfuls : 
 
