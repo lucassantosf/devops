@@ -1,18 +1,18 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-const base_url = 'http://54.221/api/'
+const base_url = 'https://sandbox.yetzpay.com.br/api/'
 var params = { headers: { 'Content-Type': 'application/json'}}
 var document = generate_document()
-var campanha = 'CARDS'
+var campanha = 'yetztech'
 var account  = '152417301'
 
 var campanha_id;
 var cartao_id;
 
 export const options = {
-  vus: 150,
-  iterations: 150, 
+  vus: 1,
+  iterations: 1, 
 };
 
 const POST = (route,payload) => {
@@ -24,16 +24,16 @@ const GET = (route) => {
 }
 
 export default function () { 
-  check_campanha()
-  check_document()
-  check_account()
-  validate_cpf()
-  consult_cnpj()  
+  // check_campanha()
+  // check_document()
+  // check_account()
+  // validate_cpf()
+  // consult_cnpj()  
   register()
-  login()
-  me()
-  cartoes()
-  extrato()
+  // login()
+  // me()
+  // cartoes()
+  // extrato()
 }
 
 function check_campanha(){
