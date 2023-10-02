@@ -1,13 +1,23 @@
 # How schedule taks via AWS Cli
 
-//Criar 
-aws application-autoscaling put-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --resource-id service/YetzEstoque/YetzEstoqueServiceApplication --scheduled-action-name YetzEstoqueServiceApplicationDOWN --schedule "cron(0 1 * * ? *)" --scalable-target-action MinCapacity=1,MaxCapacity=10
+### Consultar regras atuais agendadas de UP e DOWN
 
-//deletar
+aws application-autoscaling describe-scheduled-actions --service-namespace ecs  --scheduled-action-names YetzEstoqueServiceApplicationUP
+aws application-autoscaling describe-scheduled-actions --service-namespace ecs  --scheduled-action-names YetzEstoqueServiceApplicationDOWN
+
+### Criar regras de UP e DOWN
+
+aws application-autoscaling put-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --resource-id service/YetzEstoque/YetzEstoqueServiceApplication --scheduled-action-name YetzEstoqueServiceApplicationUP --schedule "cron(0 11 * * ? *)" --scalable-target-action MinCapacity=4,MaxCapacity=10
+
+aws application-autoscaling put-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --resource-id service/YetzEstoque/YetzEstoqueServiceApplication --scheduled-action-name YetzEstoqueServiceApplicationDOWN --schedule "cron(0 1 * * ? *)" --scalable-target-action MinCapacity=2,MaxCapacity=10
+
+### Deletar
+
+aws application-autoscaling delete-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --scheduled-action-name YetzEstoqueServiceApplicationUP
+ --resource-id service/YetzEstoque/YetzEstoqueServiceApplication 
 aws application-autoscaling delete-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --scheduled-action-name YetzEstoqueServiceApplicationDOWN --resource-id service/YetzEstoque/YetzEstoqueServiceApplication 
 
-//Consultar
-aws application-autoscaling describe-scheduled-actions --service-namespace ecs  --scheduled-action-names YetzEstoqueServiceApplicationTEST
+## OBS: Não tem como editar, precisa deletar e subir novas configurações ou horários
 
 # Execute command inside container ECS
 
