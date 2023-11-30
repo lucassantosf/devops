@@ -1,6 +1,6 @@
-FROM python:3.7.3-stretch 
+FROM python:3.7.3-stretch
 
-ENV PYTHONUNBUFFRED 1 
+ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
@@ -11,3 +11,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 EXPOSE 8000
+
+RUN chmod +x /app/django.sh
+
+ENTRYPOINT ["/app/django.sh"]

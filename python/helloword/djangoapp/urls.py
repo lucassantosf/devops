@@ -1,10 +1,10 @@
 from django.urls import path
-from . import views 
+from . import views
 
 urlpatterns = [
-    path('',views.getUsers),
-    path('store',views.storeUser),
-    path('read/<str.pk>',views.getUser),
-    path('update/<str.pk>',views.updateUser),
-    path('delete/<str.pk>',views.deleteUser),
+    path('', views.getUsers),
+    path('create', views.addUser),
+    path('read/<str:pk>', views.getUser),
+    path('update/<str:pk>', views.updateUser),
+    path('delete/<str:pk>', views.deleteUser),
 ]
