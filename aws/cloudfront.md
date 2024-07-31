@@ -105,7 +105,7 @@
 
     http://<BUCKET-NAME>.s3-website-us-east-1.amazonaws.com
 
-## Configure another one:
+## Configure Certificate Manage:
 
     Search for 'Certificate Manager' service in AWS;
     
@@ -135,7 +135,7 @@
 
     2- Tab 'Origins'
 
-        In Origin Domain selcct the S3 bucket 
+        In Origin Domain select the S3 bucket 
 
         Protocol HTTP only
 
