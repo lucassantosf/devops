@@ -42,6 +42,16 @@
 
         aws application-autoscaling put-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --resource-id service/YetzMessage/yetz-message-service-api-v2 --scheduled-action-name YetzMessageApiDOWN --schedule "cron(0 3 * * ? *)" --scalable-target-action MinCapacity=2,MaxCapacity=10
 
+### Comando unico 
+
+aws application-autoscaling put-scheduled-action \
+    --service-namespace ecs \
+    --scalable-dimension ecs:service:DesiredCount \
+    --resource-id service/YetzPay/api-v1 \
+    --scheduled-action-name YetzPayApiV1DOWN_ONCE \
+    --schedule "at(2025-03-01T03:01:00)" \
+    --scalable-target-action MinCapacity=0,MaxCapacity=0
+
 ### Deletar
 
     Estoque:
