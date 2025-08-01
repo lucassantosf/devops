@@ -1,0 +1,66 @@
+import json
+import urllib3
+from datetime import datetime
+import pytz
+
+http = urllib3.PoolManager()
+slack_webhook_url = "ENTER_WEBHOOK_SLACK_URL"
+
+def lambda_handler(event, context):
+    try:
+        print("Evento recebido do EventBridge:", json.dumps(event))
+
+        detail = event.get('detail', {})
+        variation_ids = detail.get('variation_ids', [])
+        count = detail.get('count', 0)
+        message = detail.get('message', '')
+        alert_name = detail.get('alert_name', '')
+            
+        saopaulo_tz = pytz.timezone('America/Sao_Paulo')
+        current_time_saopaulo = datetime.now(saopaulo_tz).strftime('%d/%m/%Y %H:%M')
+
+        ids_text = ", ".join(map(str, variation_ids))
+        reason_text = message
+
+        slack_message = {
+            # Adicione um campo 'text' de nível superior.
+            # O Slack usará esta mensagem para a notificação (preview).
+            "text": f"⚠️ {alert_name}",
+            "attachments": [
+                {
+                    "color": "#FF0000",
+                    "blocks": [
+                        {
+                            "type": "section",
+                            "fields": [
+                                {"type": "mrkdwn", "text": f"*Hora:* `{current_time_saopaulo}`"}
+                            ]
+                        },
+                        {
+                            "type": "divider"
+                        },
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": f"*Detalhes:*\n{reason_text}"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+
+        response = http.request(
+            'POST',
+            slack_webhook_url,
+            body=json.dumps(slack_message).encode('utf-8'),
+            headers={'Content-Type': 'application/json'}
+        )
+
+        print(f"Slack response status: {response.status}")
+        return {'statusCode': response.status}
+
+    except Exception as e:
+        print(f"Erro: {str(e)}")
+        return {'statusCode': 500, 'body': str(e)}
