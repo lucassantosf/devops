@@ -1,183 +1,71 @@
-# Code Commit - CI Continous Integration
+# AWS CI/CD Services: CodeCommit, CodeBuild, and CodePipeline
 
-    About: It's a service on AWS that provides a 'Git' repository to store code of projects on Cloud; Like other famous services : Gitlab, GitHub, BitBucket.
+## Overview
+AWS provides a comprehensive suite of Continuous Integration and Continuous Delivery (CI/CD) services to streamline software development and deployment processes.
 
-    Search for 'Code Commit' on AWS
+## 1. AWS CodeCommit
+### Purpose
+CodeCommit is a fully managed source control service that hosts secure Git repositories in the AWS cloud, similar to GitHub, GitLab, and BitBucket.
 
-    Repositories > Create Repository
+### Repository Creation
+1. Navigate to AWS CodeCommit
+2. Click "Repositories" > "Create Repository"
+3. Provide a repository name
+4. Complete repository setup
 
-    Give Repository Name: 
+### Connection Steps
+- Create Git credentials
+- Clone repository:
+  ```bash
+  git clone https://git-codecommit.us-east-1.amazonaws.com/v1/repos/[REPOSITORY_NAME]
+  ```
+- Use standard Git commands to manage code
 
-    Create;
+## 2. AWS CodeBuild
+### Purpose
+CodeBuild compiles source code, runs tests, and produces deployable software packages as part of the CI/CD process.
 
-    -------
+### Build Project Configuration
+1. Navigate to CodeBuild > Build Projects
+2. Create Build Project
+   - **Project Name**: Descriptive identifier
+   - **Source Provider**: AWS CodeCommit
+   - **Environment**:
+     - Managed Image
+     - Amazon Linux 2
+     - Latest runtime version
+     - Enable privileged mode for Docker builds
 
-    Connection steps:
+### Buildspec Configuration
+- Requires `buildspec.yml` in project root
+- Defines build steps, including ECR image generation
 
-    Create your 'Git credentials' - https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-gc.html?icmpid=docs_acc_console_connect_np
+### Common Troubleshooting
 
-    Clone the repository in your machine - git clone https://git-codecommit.us-east-1.amazonaws.com/v1/repos/
+#### 1. Authentication Failures
+- Update IAM Role Permissions
+- Add comprehensive policy for:
+  - CloudWatch Logs
+  - CodeCommit
+  - S3 Access
+  - ECR Authentication
 
-    Use git commands and push it to Code Commit
-
-# Code Build - CI Continous Integration
-
-    About: The Code Build is effectively the service that compile source code, runs tests, and produces software packages that are ready to deploy in the process de CI-CD.
-
-    Search for 'Code Commit' on AWS , on left menu, 'Build', click on 'Build Projects'
-
-    Click on 'Create build project':
-
-        'Project name'
-
-        Source:
-
-            Select the 'Source provider' -> AWS CodeCommit -> select the repository created before
-
-        Reference type : 'Branch' -> select a branch, like 'master'
-
-        Environment:    
-
-            Managed Image
-
-            Operating System : Amazon Linux 2
-
-            Runtime(s): Standard
-
-            Image e Image version : Select always the latest image for this runtime version
-
-            Environment type: Linux 
-
-            Privileged: Check - Enable this flag if you want to build Docker images or want your builds to get elevated privileges
-
-        Buildspec: your project needs a buildspec.yml file on root path
-
-        This file will contain the URI where the image of ECR is, and you need to copy to paste in this file to build your project, to generate new images into ECR
-
-        **Search for example on documentation AWS, or on project you have done this
-
-        Artifacts: No Artifacts
-
-        Logs: CloudWatch , give a name for log-group
-
-        Finish, click on 'Create build Project'
-
-    ------
-
-    ------
-
-    Possible Errors:
-
-    1 - Authentication failed on log of Code Build, missing ECR Authentication:
-
-        Go into your 'Code Build' Project. 
-        
-        Edit -> Enviroment , and get the name of Role created;
-
-        Go To IAM > Roles , search for 'codebuild-<>-service-role' , go into this
-
-        Add Permission > Attach Policies > Create Policy > View in JSON
-
-        Copy and paste all code above: 
-
-        ---------------
-
+#### Sample IAM Policy
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
         {
-            "Version": "2012-10-17",
-            "Statement": [
-                {
-                    "Sid": "CloudWatchLogsPolicy",
-                    "Effect": "Allow",
-                    "Action": [
-                        "logs:CreateLogGroup",
-                        "logs:CreateLogStream",
-                        "logs:PutLogEvents"
-                    ],
-                    "Resource": [
-                        "*"
-                    ]
-                },  
-                {
-                    "Sid": "CodeCommitPolicy",
-                    "Effect": "Allow",
-                    "Action": [
-                        "codecommit:GitPull"
-                    ],
-                    "Resource": [
-                        "*"
-                    ]
-                },  
-                {
-                    "Sid": "S3GetObjectPolicy",
-                    "Effect": "Allow",
-                    "Action": [
-                        "s3:GetObject",
-                        "s3:GetObjectVersion"
-                    ],
-                    "Resource": [
-                        "*"
-                    ]
-                }, 
-                {
-                    "Sid": "S3PutObjectPolicy",
-                    "Effect": "Allow",
-                    "Action": [
-                        "s3:PutObject"
-                    ],
-                    "Resource": [
-                        "*"
-                    ]
-                }, 
-                {
-                    "Sid": "ECRPullPolicy",
-                    "Effect": "Allow",
-                    "Action": [
-                        "ecr:BatchCheckLayerAvailability",
-                        "ecr:GetDownloadUrlForLayer",
-                        "ecr:InitiateLayerUpload",
-                        "ecr:BatchGetImage"
-                    ],
-                    "Resource": [
-                        "*"
-                    ]
-                }, 
-                {
-                    "Sid": "ECRAuthPolicy",
-                    "Effect": "Allow",
-                    "Action": [
-                        "ecr:GetAuthorizationToken"
-                    ],
-                    "Resource": [
-                        "*"
-                    ]
-                }, 
-                {
-                    "Sid": "S3BucketIdentity",
-                    "Effect": "Allow",
-                    "Action": [
-                        "s3:GetBucketAcl",
-                        "s3:GetBucketLocation"
-                    ],
-                    "Resource": [
-                        "*"
-                    ]
-                }
-            ]
-        }
-
-        --------------------- Next;Create Policy; Give Policy name; Finish;
-
-        Run Again the build process, clicking on 'Start Build';
-
-    2 - Differents Errors of 'docker push'
-
-        When the build runs, each time, can be showed in logs, errors of:
-
-        Missing permission to "ecr:UploadLayerPart","ecr:CompleteLayerUpload","ecr:PutImage"
-
-        Edit your role>permission and include each one, at the section:
-
-        .....
+            "Sid": "CloudWatchLogsPolicy",
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": ["*"]
+        },
+        {
             "Sid": "ECRPullPolicy",
             "Effect": "Allow",
             "Action": [
@@ -187,57 +75,47 @@
                 "ecr:BatchGetImage",
                 "ecr:UploadLayerPart",
                 "ecr:CompleteLayerUpload",
-                "ecr:PutImage"
+                "ecr:PutImage",
+                "ecr:GetAuthorizationToken"
             ],
-            "Resource": [
-                "*"
-            ]  
-        ..... 
+            "Resource": ["*"]
+        }
+    ]
+}
+```
 
-# Code Pipeline - CD Continous Delivery
+## 3. AWS CodePipeline
+### Purpose
+CodePipeline automates software release processes, integrating with other AWS services to provide end-to-end continuous delivery.
 
-    About: AWS CodePipeline is a fully managed continuous delivery service that helps you automate your software release process. It allows you to model, visualize, and automate the steps required to release your software. CodePipeline builds, tests, and deploys your code every time there is a code change, based on the release model you define. It also integrates with other AWS services such as CodeCommit, CodeBuild, and CodeDeploy to provide a complete release pipeline solution.
-    
-    Search for 'Code Commit' on AWS , on left menu, 'Pipeline', click on 'Pipelines'
+### Pipeline Creation Steps
+1. Navigate to CodePipeline > Pipelines
+2. Create Pipeline
+   - **Source Stage**: AWS CodeCommit
+   - **Build Stage**: AWS CodeBuild
+   - **Deploy Stage**: ECS/Other deployment targets
 
-    Click on 'Create pipeline':
+### Pipeline Configuration
+- Select source repository
+- Choose build project
+- Define deployment service
+- Optional: Specify image definitions file
 
-    Step 1:
+## Best Practices
+- Use least privilege IAM roles
+- Implement comprehensive error handling
+- Regularly review and update pipeline configurations
+- Use environment-specific configurations
+- Implement robust testing in build stages
 
-        Pipeline name
+## Security Considerations
+- Encrypt repositories
+- Use IAM roles with minimal permissions
+- Enable multi-factor authentication
+- Regularly audit access logs
 
-    Step 2:
+## Recommended Learning Resources
+- [AWS CI/CD Tutorial Playlist](https://www.youtube.com/playlist?list=PLMpVQWIR2lKcbHCV3eIIT5kpvyYP2I-tJT)
 
-        Select Source Provider: AWS Code Commit ;
-
-        Select the Repository Name;
-
-        Branch name: e.g 'master'
-
-    Step 3:
-
-        Select the Build Provider : 'AWS CodeBuild' 
-
-        Region: US East (N.Virginia)
-
-        Project Name: select the one you're working
-
-    Step 4:
-
-        Deploy provider: select the ECS you are working
-
-        Region: US East (N.Virginia)
-
-        Cluster name
-
-        Service name
-
-        Image definitions file - optional - 'imagedefinitions.json'
-
-    Step 5:
-
-        Review and finish
-
-# Helpfuls : 
-
-https://www.youtube.com/playlist?list=PLMpVQWIR2lKcbHCV3eIIT5kpvyYP2I-tJ
+## Disclaimer
+Configurations may vary based on specific project requirements. Always test thoroughly in a staging environment.

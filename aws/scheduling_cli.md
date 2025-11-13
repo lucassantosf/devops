@@ -1,49 +1,123 @@
-# How schedule taks via AWS Cli
+# AWS CLI Scheduling and Container Management Guide
 
-## OBS: Não é possivel editar, precisa deletar e subir novas configurações ou horários
+## Overview
+This guide provides comprehensive instructions for managing scheduled actions and executing commands in AWS ECS (Elastic Container Service) using AWS CLI.
 
-### Consultar regras atuais agendadas de UP e DOWN
+## Important Note
+⚠️ Scheduling Configuration Limitation:
+- Cannot edit existing scheduled actions
+- Must delete and recreate configurations
 
-    Estoque:
+## Scheduled Actions Management
 
-        aws application-autoscaling describe-scheduled-actions --service-namespace ecs  --scheduled-action-names YetzEstoqueServiceApplicationUP
+### Viewing Current Scheduled Actions
 
-        aws application-autoscaling describe-scheduled-actions --service-namespace ecs  --scheduled-action-names YetzEstoqueServiceApplicationDOWN
+#### Inventory Service (Estoque)
+```bash
+# Check UP schedule
+aws application-autoscaling describe-scheduled-actions \
+    --service-namespace ecs \
+    --scheduled-action-names YetzEstoqueServiceApplicationUP
 
-    Pay:
+# Check DOWN schedule
+aws application-autoscaling describe-scheduled-actions \
+    --service-namespace ecs \
+    --scheduled-action-names YetzEstoqueServiceApplicationDOWN
+```
 
-        aws application-autoscaling describe-scheduled-actions --service-namespace ecs  --scheduled-action-names YetzPayApiV1UP
+#### Pay Service
+```bash
+# Check UP schedule
+aws application-autoscaling describe-scheduled-actions \
+    --service-namespace ecs \
+    --scheduled-action-names YetzPayApiV1UP
 
-        aws application-autoscaling describe-scheduled-actions --service-namespace ecs  --scheduled-action-names YetzPayApiV1DOWN
+# Check DOWN schedule
+aws application-autoscaling describe-scheduled-actions \
+    --service-namespace ecs \
+    --scheduled-action-names YetzPayApiV1DOWN
+```
 
-    Message:
+#### Message Service
+```bash
+# Check UP schedule
+aws application-autoscaling describe-scheduled-actions \
+    --service-namespace ecs \
+    --scheduled-action-names YetzMessageApiUP
 
-        aws application-autoscaling describe-scheduled-actions --service-namespace ecs  --scheduled-action-names YetzMessageApiUP
+# Check DOWN schedule
+aws application-autoscaling describe-scheduled-actions \
+    --service-namespace ecs \
+    --scheduled-action-names YetzMessageApiDOWN
+```
 
-        aws application-autoscaling describe-scheduled-actions --service-namespace ecs  --scheduled-action-names YetzMessageApiDOWN
+### Creating Scheduled Actions
 
-### Criar regras de UP e DOWN
+#### Inventory Service (Estoque)
+```bash
+# Scale UP
+aws application-autoscaling put-scheduled-action \
+    --service-namespace ecs \
+    --scalable-dimension ecs:service:DesiredCount \
+    --resource-id service/YetzEstoque/YetzEstoqueServiceApplication \
+    --scheduled-action-name YetzEstoqueServiceApplicationUP \
+    --schedule "cron(30 9 * * ? *)" \
+    --scalable-target-action MinCapacity=4,MaxCapacity=10
 
-    Estoque:
-    
-        aws application-autoscaling put-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --resource-id service/YetzEstoque/YetzEstoqueServiceApplication --scheduled-action-name YetzEstoqueServiceApplicationUP --schedule "cron(30 9 * * ? *)" --scalable-target-action MinCapacity=4,MaxCapacity=10
+# Scale DOWN
+aws application-autoscaling put-scheduled-action \
+    --service-namespace ecs \
+    --scalable-dimension ecs:service:DesiredCount \
+    --resource-id service/YetzEstoque/YetzEstoqueServiceApplication \
+    --scheduled-action-name YetzEstoqueServiceApplicationDOWN \
+    --schedule "cron(30 2 * * ? *)" \
+    --scalable-target-action MinCapacity=2,MaxCapacity=10
+```
 
-        aws application-autoscaling put-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --resource-id service/YetzEstoque/YetzEstoqueServiceApplication --scheduled-action-name YetzEstoqueServiceApplicationDOWN --schedule "cron(30 2 * * ? *)" --scalable-target-action MinCapacity=2,MaxCapacity=10 
+#### Pay Service
+```bash
+# Scale UP
+aws application-autoscaling put-scheduled-action \
+    --service-namespace ecs \
+    --scalable-dimension ecs:service:DesiredCount \
+    --resource-id service/YetzPay/api-v1 \
+    --scheduled-action-name YetzPayApiV1UP \
+    --schedule "cron(0 11 * * ? *)" \
+    --scalable-target-action MinCapacity=6,MaxCapacity=40
 
-    Pay:
+# Scale DOWN
+aws application-autoscaling put-scheduled-action \
+    --service-namespace ecs \
+    --scalable-dimension ecs:service:DesiredCount \
+    --resource-id service/YetzPay/api-v1 \
+    --scheduled-action-name YetzPayApiV1DOWN \
+    --schedule "cron(30 01 * * ? *)" \
+    --scalable-target-action MinCapacity=3,MaxCapacity=20
+```
 
-        aws application-autoscaling put-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --resource-id service/YetzPay/api-v1 --scheduled-action-name YetzPayApiV1UP --schedule "cron(0 11 * * ? *)" --scalable-target-action MinCapacity=6,MaxCapacity=40
+#### Message Service
+```bash
+# Scale UP
+aws application-autoscaling put-scheduled-action \
+    --service-namespace ecs \
+    --scalable-dimension ecs:service:DesiredCount \
+    --resource-id service/YetzMessage/yetz-message-service-api-v2 \
+    --scheduled-action-name YetzMessageApiUP \
+    --schedule "cron(0 11 * * ? *)" \
+    --scalable-target-action MinCapacity=4,MaxCapacity=10
 
-        aws application-autoscaling put-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --resource-id service/YetzPay/api-v1 --scheduled-action-name YetzPayApiV1DOWN --schedule "cron(30 01 * * ? *)" --scalable-target-action MinCapacity=3,MaxCapacity=20
+# Scale DOWN
+aws application-autoscaling put-scheduled-action \
+    --service-namespace ecs \
+    --scalable-dimension ecs:service:DesiredCount \
+    --resource-id service/YetzMessage/yetz-message-service-api-v2 \
+    --scheduled-action-name YetzMessageApiDOWN \
+    --schedule "cron(0 3 * * ? *)" \
+    --scalable-target-action MinCapacity=2,MaxCapacity=10
+```
 
-    Message:
-
-        aws application-autoscaling put-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --resource-id service/YetzMessage/yetz-message-service-api-v2 --scheduled-action-name YetzMessageApiUP --schedule "cron(0 11 * * ? *)" --scalable-target-action MinCapacity=4,MaxCapacity=10
-
-        aws application-autoscaling put-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --resource-id service/YetzMessage/yetz-message-service-api-v2 --scheduled-action-name YetzMessageApiDOWN --schedule "cron(0 3 * * ? *)" --scalable-target-action MinCapacity=2,MaxCapacity=10
-
-### Comando unico 
-
+### One-Time Scheduled Action
+```bash
 aws application-autoscaling put-scheduled-action \
     --service-namespace ecs \
     --scalable-dimension ecs:service:DesiredCount \
@@ -51,37 +125,69 @@ aws application-autoscaling put-scheduled-action \
     --scheduled-action-name YetzPayApiV1DOWN_ONCE \
     --schedule "at(2025-03-01T03:01:00)" \
     --scalable-target-action MinCapacity=0,MaxCapacity=0
+```
 
-### Deletar
+### Deleting Scheduled Actions
 
-    Estoque:
+#### Inventory Service (Estoque)
+```bash
+aws application-autoscaling delete-scheduled-action \
+    --service-namespace ecs \
+    --scalable-dimension ecs:service:DesiredCount \
+    --scheduled-action-name YetzEstoqueServiceApplicationUP \
+    --resource-id service/YetzEstoque/YetzEstoqueServiceApplication 
 
-        aws application-autoscaling delete-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --scheduled-action-name YetzEstoqueServiceApplicationUP --resource-id service/YetzEstoque/YetzEstoqueServiceApplication 
+aws application-autoscaling delete-scheduled-action \
+    --service-namespace ecs \
+    --scalable-dimension ecs:service:DesiredCount \
+    --scheduled-action-name YetzEstoqueServiceApplicationDOWN \
+    --resource-id service/YetzEstoque/YetzEstoqueServiceApplication 
+```
 
-        aws application-autoscaling delete-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --scheduled-action-name YetzEstoqueServiceApplicationDOWN --resource-id service/YetzEstoque/YetzEstoqueServiceApplication 
+## ECS Container Management
 
-    Pay:
+### List Tasks
+```bash
+aws ecs list-tasks \
+    --cluster <CLUSTER_NAME> \
+    --service <SERVICE_CONTAINER>
+```
 
-        aws application-autoscaling delete-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --scheduled-action-name YetzPayApiV1UP --resource-id service/YetzPay/api-v1
+### Describe Task
+```bash
+aws ecs describe-tasks \
+    --cluster <CLUSTER_NAME> \
+    --tasks <TASK_ID> \
+    --query 'tasks[].containers[].containerArn'
+```
 
-        aws application-autoscaling delete-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --scheduled-action-name YetzPayApiV1DOWN --resource-id service/YetzPay/api-v1
+### Execute Command in Container
+```bash
+aws ecs execute-command \
+    --cluster <CLUSTER_NAME> \
+    --task <TASK_ID> \
+    --container <SERVICE_CONTAINER> \
+    --command "/bin/bash"
+```
 
-    Message:
+## Best Practices
+- Use precise cron expressions
+- Test scheduled actions in staging
+- Monitor auto-scaling events
+- Implement logging and alerts
+- Regularly review and update schedules
 
-        aws application-autoscaling delete-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --scheduled-action-name YetzMessageApiUP --resource-id service/YetzMessage/yetz-message-service-api-v2
+## Security Considerations
+- Use least privilege IAM roles
+- Secure AWS CLI credentials
+- Implement multi-factor authentication
+- Audit scheduled actions regularly
 
-        aws application-autoscaling delete-scheduled-action --service-namespace ecs --scalable-dimension ecs:service:DesiredCount --scheduled-action-name YetzMessageApiDOWN --resource-id service/YetzMessage/yetz-message-service-api-v2
+## Troubleshooting
+- Verify cron syntax
+- Check IAM permissions
+- Confirm cluster and service names
+- Review CloudWatch logs
 
-# Execute command inside container ECS
-
-## List tasks
-
-    aws ecs list-tasks --cluster <CLUSTER_NAME> --service <SERVICE_CONTAINER>
-
-## Describe task
-
-    aws ecs describe-tasks --cluster <CLUSTER_NAME> --tasks <TASK_ID> --query 'tasks[].containers[].containerArn'
-
-## Execute command inside task container
-
-    aws ecs execute-command --cluster <CLUSTER_NAME> --task <TASK_ID> --container <SERVICE_CONTAINER> --command "/bin/bash"
+## Disclaimer
+Scheduling configurations are environment-specific. Always validate and test thoroughly before production deployment.

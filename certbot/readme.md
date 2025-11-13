@@ -1,22 +1,70 @@
-# Installing SSL with certbot and 'LetsEncript' :
+# SSL Certificate Management with Certbot and Let's Encrypt
 
-# Unzip and attach it on docker .yml volume of nginx, near to :
+## Overview
+This guide provides step-by-step instructions for installing and configuring SSL certificates using Certbot and Let's Encrypt for Nginx containers.
 
-    Unzip letsencrypt.zip on remote server
+## Prerequisites
+- Docker installed
+- Nginx container running
+- Domain(s) you want to secure
 
-    nginx:
+## Installation Steps
 
-    volumes:
-        - /etc/letsencrypt/:/etc/letsencrypt/
+### 1. Unzip Let's Encrypt Resources
+Unzip the `letsencrypt.zip` on your remote server.
 
-# Go into nginx container
+### 2. Configure Nginx Docker Compose
+Update your Nginx docker-compose configuration to mount Let's Encrypt volumes:
 
-    sudo docker exec -it nginx sh
+```yaml
+nginx:
+  volumes:
+    - /etc/letsencrypt/:/etc/letsencrypt/
+```
 
-# Install certbot-nginx on container
+### 3. Access Nginx Container
+Enter the Nginx container using Docker:
 
-    apk add certbot-nginx
+```bash
+sudo docker exec -it nginx sh
+```
 
-# Request certificate SSL for specific domains
+### 4. Install Certbot
+Inside the container, install Certbot for Nginx:
 
-    certbot --nginx -d domain.com.br -d www.domain.com.br
+```bash
+apk add certbot-nginx
+```
+
+### 5. Request SSL Certificate
+Generate SSL certificates for your domains:
+
+```bash
+certbot --nginx -d domain.com.br -d www.domain.com.br
+```
+
+## Important Notes
+- Replace `domain.com.br` with your actual domain
+- Certbot will automatically configure Nginx SSL settings
+- Certificates are free and automatically renewable
+
+## Renewal
+Let's Encrypt certificates expire every 90 days. Certbot can automatically renew them:
+
+```bash
+certbot renew
+```
+
+## Troubleshooting
+- Ensure ports 80 and 443 are open
+- Verify domain DNS settings
+- Check container network configuration
+
+## Security Recommendations
+- Keep Certbot and Let's Encrypt packages updated
+- Use automatic renewal mechanisms
+- Implement strong SSL/TLS configurations
+
+## References
+- [Certbot Documentation](https://certbot.eff.org/)
+- [Let's Encrypt](https://letsencrypt.org/)

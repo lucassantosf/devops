@@ -1,65 +1,78 @@
-# Create a Auto Scalling Model with Load Balancer ELB :
+# AWS Auto Scaling with Elastic Load Balancer (ELB)
 
-1. After you have an EC2 instance ready (api running, docker installed, etc), create a Image of it on EC2 area
+## Overview
+This guide provides a step-by-step process for creating an Auto Scaling Group with an Elastic Load Balancer in AWS, enabling dynamic infrastructure scaling and high availability.
 
-2. Go to 'Launch Templates' left menu on EC2
+## Prerequisites
+- Prepared EC2 instance with:
+  - API running
+  - Docker installed
+  - Configured security settings
 
-3. Create 'Launch Templates' with:
+## Step-by-Step Configuration
 
-    Name;
+### 1. Create EC2 Instance Image
+- Navigate to EC2 Dashboard
+- Select your prepared instance
+- Create an Amazon Machine Image (AMI)
+- Note the AMI ID for future use
 
-    Description;
+### 2. Create Launch Template
+#### Location: EC2 Dashboard > Launch Templates
+- **Name**: Descriptive identifier for your template
+- **Description**: Detailed explanation of template purpose
+- **Amazon Machine Image (AMI)**: Select previously created AMI
+- **Key Pair**: Select corresponding .pem key
+- **Network Settings**:
+  - Select appropriate Security Group (SG_API)
+  - Choose specific subnet
+- **Keep other settings at default**
 
-    Select the Image created on first step;
+### 3. Create Auto Scaling Group
+#### Location: EC2 Dashboard > Auto Scaling > Auto Scaling Groups
+1. **Basic Configuration**
+   - Provide a meaningful name
+   - Select the Launch Template
+   - Choose latest version
 
-    Key Pair: select the .pem used
+2. **Network Configuration**
+   - Select appropriate VPC
+   - Choose multiple subnets for high availability
 
-    Network settings: select the SG_API used and subnet-1
+3. **Load Balancer Integration**
+   - Attach to existing Load Balancer
+   - Select corresponding Target Group
+   - Enable ELB Health Checks
 
-    All others: default options
+4. **Capacity Configuration**
+   - **Desired Capacity**: Initial number of instances
+   - **Minimum Capacity**: Lowest number of instances
+   - **Maximum Capacity**: Highest number of instances
 
-4. Search for left Menu => Auto Scaling - Auto Scaling Groups
+5. **Scaling Policies** (Optional)
+   - **Target Tracking Scaling**
+     - Metric: CPU Utilization
+     - Target Value: 50%
+   - **Warm-up Period**: 300 seconds (instance startup time)
 
-    Click on Create Auto Scaling Group
+### Scaling Policy Recommendations
+- Monitor multiple metrics
+- Set conservative initial thresholds
+- Gradually refine based on application performance
 
-    Give a Name;
+## Best Practices
+- Use multiple availability zones
+- Implement comprehensive health checks
+- Monitor instance performance
+- Regularly review and adjust scaling policies
 
-    Choose the Launch Template created on step before
+## Troubleshooting
+- Verify security group configurations
+- Check instance health and logs
+- Ensure proper IAM roles and permissions
 
-    Version: Latest (1)
+## Recommended Learning Resource
+[AWS Auto Scaling with ELB Tutorial](https://www.youtube.com/watch?v=fidFQ2ocqsI&list=PLOF5f9_x-OYUaqJar6EKRAonJNSHDFZUm&index=12)
 
-    Next;
-
-    Network settings: select the VPC and all Subnets used
-
-    Next;
-
-    Select option to Attach to a Load Balancer and Select the Load Balancer created and TargetGroup
-
-    Select Health Checker of ELB
-
-    Next;
-
-    Select the Desire Capacity of machine runnings
-
-    Capacity min
-    
-    Capacity max
-
-    Scalability Policies - Optional - Inform Amazon of the criteria for Scaling
-
-        Select Sizing policy with objective monitoring 
-
-        Eg: usage of CPU , targe value 50 
-
-        Machines need 300 seconds to start
-
-    Next;
-
-    Finish
-
-# Helpfuls :
-
-Class - Auto Scaling Model com ELB Elastic Load Balancer
-
-https://www.youtube.com/watch?v=fidFQ2ocqsI&list=PLOF5f9_x-OYUaqJar6EKRAonJNSHDFZUm&index=12    
+## Disclaimer
+Configuration may vary based on specific infrastructure requirements. Always test in a staging environment first.

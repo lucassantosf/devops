@@ -1,75 +1,109 @@
-# Deploy AWS Elastic Load Balancer ELB :
+# AWS Elastic Load Balancer (ELB) Deployment Guide
 
-1. On EC2 area , look up for 'Load Balance' on left menu, 'Create load balancer'
+## Overview
+Amazon Elastic Load Balancing (ELB) automatically distributes incoming application traffic across multiple targets, such as EC2 instances, containers, and IP addresses, ensuring high availability and fault tolerance.
 
-2.  Steps:
+## Deployment Steps
 
-    Select the ELB type : < Choose HTTP option >
+### 1. Access Load Balancer Creation
+1. Navigate to EC2 Dashboard
+2. Select 'Load Balancers' from left menu
+3. Click 'Create Load Balancer'
 
-    --------------
+### 2. Load Balancer Configuration
 
-    Give the load balancer name
+#### Basic Settings
+- **Type**: HTTP/HTTPS
+- **Name**: Descriptive identifier
+- **Scheme**: Internet-facing (public exposure)
+- **IP Address Type**: IPv4
 
-    --------------
+#### Network Configuration
+1. **VPC Selection**
+   - Choose previously created VPC
+   - Select all available zones
 
-    Scheme : Internet-facing (public expost)
+#### Security Group Configuration
+1. **Create Dedicated Load Balancer Security Group**
+   - Inbound Rules:
+     - Allow HTTP (port 80)
+     - Allow HTTPS (port 443, optional)
+     - Source: 0.0.0.0/0 (All sources)
 
-    --------------
-    
-    IP address type : IPV4
+2. **API Security Group Configuration**
+   - Allow Load Balancer Security Group on inbound rules
+   - Specific port (typically 80)
 
-    --------------
+#### Listeners Configuration
+- **Ports**:
+  - HTTP (80)
+  - HTTPS (443) - Optional, requires SSL certificate
 
-    Network Mapping
+### 3. Target Group Setup
 
-        Select the VPC created and used and all zones used on your VPC 
-    
-    --------------
+#### Target Group Creation
+1. **Type**: Instance
+2. **Protocol**: HTTP
+3. **Port**: 80
+4. **Protocol Version**: HTTP
 
-    Select Security Group 
+#### Health Check Configuration
+- **Path**: Endpoint for health verification
+  - Example: `/api/ping`
+- **Expected Response**:
+  - Status Code: 200
+  - Response: `{'pong': 'ok'}`
 
-    Create a new Security Group for only LoadBalancer usage
+#### Instance Registration
+- Select running EC2 instances
+- Add to target group as pending targets
 
-        Allowing port HTTP 80/443* on 'Inbound Rules' for 0.0.0.0
+### 4. Finalize Load Balancer Creation
 
-    And after, allow this SecurityGroup_ELB port 80 on SG inbound rules of API
-    
-    --------------
+## Health Check Best Practices
 
-    Listeners : Add ports 80 and 443 (if you don't have domain or domain don't have SSL certificate, don't add this port for while)
+### Effective Health Check Implementation
+- Create a dedicated health check endpoint
+- Return consistent 200 status code
+- Minimal processing overhead
+- Quick response time
+- Verify critical system dependencies
 
-    Select or Create 'Target Group Option'
+### Health Check Endpoint Example
+```python
+@app.route('/api/ping')
+def health_check():
+    return jsonify({'pong': 'ok'}), 200
+```
 
-        To create , steps: 
+## Load Balancer Types
+- **Application Load Balancer (ALB)**: Layer 7, content-based routing
+- **Network Load Balancer (NLB)**: Layer 4, high-performance TCP/UDP
+- **Classic Load Balancer**: Legacy, basic load balancing
 
-            Type target : Instance
+## Security Considerations
+- Use HTTPS/SSL for encrypted communication
+- Implement strict security group rules
+- Regularly update and patch instances
+- Use AWS WAF for additional protection
+- Enable access logs
 
-            Protocol : HTTP
+## Performance Optimization
+- Right-size target instances
+- Use multiple availability zones
+- Implement connection draining
+- Monitor load balancer metrics
+- Use sticky sessions judiciously
 
-            Port : 80
+## Troubleshooting
+- Verify security group configurations
+- Check instance health status
+- Review target group settings
+- Analyze CloudWatch metrics
+- Validate health check endpoint
 
-            Protocol Version : HTTP 
+## Recommended Learning Resource
+[ELB Configuration Tutorial](https://www.youtube.com/watch?v=8vcrE0FojKY&list=PLOF5f9_x-OYUaqJar6EKRAonJNSHDFZUm&index=11)
 
-            Health checks : Put a path on application to receve a request and status code 200 response 
-
-                "/api/ping" -> '{pong:'ok'}' : 200  
-
-            Next
-
-            Select the instance EC2 is running
-
-                Click on 'Include as pending below'
-
-    --------------
-    
-    Finish the creation
-
-# Health Check
-
-    It's necessary that Target Group has done the Healty Check on your path described before.
-
-# Helpfuls :
-
-Class - Configuratin ELB on AWS
-
-https://www.youtube.com/watch?v=8vcrE0FojKY&list=PLOF5f9_x-OYUaqJar6EKRAonJNSHDFZUm&index=11
+## Disclaimer
+Load balancer configuration depends on specific application architecture. Always test thoroughly in a staging environment before production deployment.

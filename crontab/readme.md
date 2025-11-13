@@ -2,11 +2,11 @@
 
 sudo crontab -e
 
-# Check logs of execution crontab:
+# Check logs of crontab execution:
 
 grep CRON /var/log/syslog
 
-# Indicate the periodicy, where the sh is (or other program), script path:
+# Specify the periodicity, script path:
 
 # Examples:
 

@@ -1,57 +1,90 @@
-# Deploy AWS EC2 :
+# AWS EC2 Instance Deployment Guide
 
-1. Search for EC2 service, and click on 'Launch instances'
+## Overview
+Amazon Elastic Compute Cloud (EC2) provides scalable computing capacity in the AWS cloud, allowing you to deploy and manage virtual servers quickly and efficiently.
 
-2. Select the following options:
+## Step-by-Step EC2 Instance Creation
 
-    Give a name
+### 1. Launch Instance
+1. Navigate to AWS EC2 Service
+2. Click "Launch Instances"
 
-    Select the OS Image 
+### 2. Instance Configuration
 
-    Select instance type (configuration : RAM,CPU,etc)
+#### Basic Settings
+- **Name**: Provide a descriptive name
+- **Operating System (OS)**: Select appropriate image
+- **Instance Type**: Choose based on workload requirements
+  - Consider CPU, RAM, and performance needs
 
-    Network settings ( Select VPC created before, Subnet )
+#### Network Configuration
+- **VPC**: Select pre-configured Virtual Private Cloud
+- **Subnet**: Choose specific subnet
+- **Security Group**: Create/select dedicated security group
+  - Configure inbound/outbound rules
+  - Limit access to specific ports and sources
 
-    Select Firewall ( Security Group created for this only API )
+#### Storage
+- **Size**: Allocate appropriate storage
+- **Type**: Select SSD, HDD based on performance needs
+- **IOPS**: Configure if high-performance storage required
 
-    Select size of Storage
+#### Access
+- **Key Pair**: Create new .pem file for SSH access
+- **Secure**: Store private key safely
+- **Permissions**: Set restrictive file permissions
 
-    Create new key .pem for SSH 
+### 3. Optional: Elastic IP Association
+1. Allocate Elastic IP
+2. Associate with EC2 instance
+3. Enable "Reassociate IP" option
 
-3. Optional: associate a Elastic IP Address for EC2
+## Creating EC2 Machine Image (AMI)
 
-    Allocate one 
+### Purpose
+- Create a snapshot of configured EC2 instance
+- Serves as a backup and template for future deployments
+- Captures installed applications and configurations
 
-    After created, select it and Actions -> Associate...
+### Benefits
+- Rapid infrastructure replication
+- Consistent environment deployment
+- Disaster recovery preparation
 
-    Select the EC2 instance
+### Image Creation Process
+1. Ensure all applications are installed
+2. Verify system configuration
+3. Create AMI from running instance
+4. Store and manage AMI securely
 
-    Mark option of <Reassociate IP>
+## Cost Considerations
 
-# Image ?
+### Elastic IP
+- Free when associated with running instance
+- Charged if allocated but not used
+- Best practice: Release unused Elastic IPs
 
-    After created the EC2, and installed all the aplication you wanna run with in this EC2, you can build a image of all this files.
+## Best Practices
+- Use least privilege security groups
+- Implement regular system updates
+- Use AMIs for consistent deployments
+- Monitor instance performance
+- Implement backup and recovery strategies
 
-    It's like a 'backup' of your EC2, after taked the image, you can select this image when lauching a new one, and up a new EC2 equals
+## Security Recommendations
+- Use strong, unique SSH keys
+- Disable root SSH login
+- Implement multi-factor authentication
+- Regularly rotate access credentials
+- Use security groups as firewall
 
-    your image. 
+## Recommended Resources
+### Tutorials
+- [AWS EC2 Instance Creation](https://www.youtube.com/watch?v=a6nU5NTHJDM&list=PLOF5f9_x-OYUaqJar6EKRAonJNSHDFZUm&index=10)
 
+### Docker Installation
+- [Docker on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04)
+- [Docker Compose on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04)
 
-# Observations :
-
-1. Elastic IP is payed only if reserve one, and don't use it. If yout attach to a EC2 or any others, no custs will be generated.
-
-
-# Helpfuls :
-
-Class - Creating EC2 on AWS
-
-https://www.youtube.com/watch?v=a6nU5NTHJDM&list=PLOF5f9_x-OYUaqJar6EKRAonJNSHDFZUm&index=10
-
-Install Docker on Ubuntu
-
-https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
-
-Install Docker-compose in Ubuntu
-
-https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
+## Disclaimer
+Configuration requirements vary. Always test and validate in a staging environment before production deployment.
