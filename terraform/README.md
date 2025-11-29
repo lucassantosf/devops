@@ -48,12 +48,15 @@ terraform destroy
 - Use variables for flexibility
 - Implement state locking
 
-## Common Workflow
+## Common Workflow - commands
 1. Write configuration files
 2. Run `terraform init`
 3. Verify with `terraform plan`
 4. Apply changes with `terraform apply`
-5. Manage and update as needed
+5. Revert all changes with `terraform destroy`
+6. Fix formatting to match HCL spec `terraform fmt`
+7. Check syntax and logic `terraform validate`
+8. Manage and update as needed
 
 ## Resources
 - [Official Terraform Documentation](https://www.terraform.io/docs/)

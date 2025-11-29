@@ -23,36 +23,23 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-# Ignore AWS credentials and sensitive files
+# Ignore environment-specific files
+.env
+*.env
+
+# Ignore any .pem or .key files (SSH keys, certificates)
 *.pem
 *.key
-*.crt
-credentials
-.aws/
-aws_credentials
-aws_config
 
-# Ignore Terraform lock files (optional, depending on team workflow)
-.terraform.lock.hcl
+# Ignore backup files
+*.bak
+*.backup
 
-# Ignore plan output files
-tfplan
-tfplan.out
-
-# Ignore any local configuration or secret files
-*.auto.tfvars
-*.auto.tfvars.json
-
-# Ignore system and IDE files
+# Ignore MacOS system files
 .DS_Store
-.idea/
+
+# Ignore VSCode settings
 .vscode/
-*.swp
-*~
 
-# Ignore logs
-*.log
-
-# Ignore temporary files
-tmp/
-temp/
+# Ignore Terraform lock files if you want to (optional)
+# .terraform.lock.hcl
