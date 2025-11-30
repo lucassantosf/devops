@@ -56,6 +56,11 @@ terraform destroy
 5. Revert all changes with `terraform destroy`
 6. Fix formatting to match HCL spec `terraform fmt`
 7. Check syntax and logic `terraform validate`
+7. Opening terraform console `terraform console`
+7. Display all state data `terraform show`
+7. List all resources and data sources `terraform state list`
+7. List all atributes of a single object `terraform state show ADDR` , `terraform state show aws_vpn.main`
+7. Show outputs store in state `terraform output NAME`
 8. Manage and update as needed
 
 ## Resources

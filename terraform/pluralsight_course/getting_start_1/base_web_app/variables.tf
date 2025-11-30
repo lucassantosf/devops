@@ -37,3 +37,24 @@ variable "ec2_instance_type" {
   description = "The type of EC2 instance to launch"
   type        = string
 }
+
+variable "company_name" {
+  description = "The name of the company"
+  type        = string
+  default     = "LFSolutions"
+}
+
+variable "project" {
+  description = "The name of the project"
+  type        = string
+}
+
+variable "environment" {
+  description = "The environment for the deployment (e.g, dev,stagging,prod)"
+  type        = string
+}
+
+variable "billing_code" {
+  description = "The billing code for the project"
+  type        = string
+}
