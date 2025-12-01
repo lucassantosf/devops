@@ -56,12 +56,13 @@ terraform destroy
 5. Revert all changes with `terraform destroy`
 6. Fix formatting to match HCL spec `terraform fmt`
 7. Check syntax and logic `terraform validate`
-7. Opening terraform console `terraform console`
-7. Display all state data `terraform show`
-7. List all resources and data sources `terraform state list`
-7. List all atributes of a single object `terraform state show ADDR` , `terraform state show aws_vpn.main`
-7. Show outputs store in state `terraform output NAME`
-8. Manage and update as needed
+8. Opening terraform console `terraform console`
+9. Display all state data `terraform show`
+10. List all resources and data sources `terraform state list`
+11. List all atributes of a single object `terraform state show ADDR` , `terraform state show aws_vpn.main`
+12. Show outputs store in state `terraform output NAME`
+13. Passing variable via command `terraform plan -var "instance_type=t3.nano"`
+14. Manage and update as needed
 
 ## Resources
 - [Official Terraform Documentation](https://www.terraform.io/docs/)
