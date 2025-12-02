@@ -1,5 +1,7 @@
 resource "aws_s3_bucket" "bucket" {
   bucket_prefix = var.bucket_prefix
+
+  tags = var.tags
 }
 
 resource "aws_s3_bucket_ownership_controls" "bucket" {

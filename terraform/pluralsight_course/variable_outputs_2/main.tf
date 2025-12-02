@@ -2,6 +2,19 @@ provider "aws" {
   region = var.region
 }
 
+locals {
+  #name for resources 
+  vpc_name      = "${local.naming_prefix}-vpc"
+  sg_name       = "${local.naming_prefix}-sg"
+  profile_name  = "${local.naming_prefix}-instance-profile"
+  role_name     = "${local.naming_prefix}-role"
+  instance_name = "${local.naming_prefix}-web"
+  secret_name   = "${local.naming_prefix}-api-key"
+  bucket_name   = local.naming_prefix
+  subnet_names  = [for name in keys(var.vpc_network_info.public_subnets) : "${local.naming_prefix}-${name}"]
+}
+
+
 ## Networking Resources
 
 data "aws_availability_zones" "available" {
@@ -12,15 +25,17 @@ module "networking" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "6.0.1"
 
-  name = var.vpc_network_info.vpc_name
+  name = local.vpc_name
   cidr = var.vpc_network_info.vpc_cidr
 
-  azs                     = slice(data.aws_availability_zones.available.names, 0, 2)
+  azs                     = slice(data.aws_availability_zones.available.names, 0, length(var.vpc_network_info.public_subnets))
   public_subnets          = values(var.vpc_network_info.public_subnets)
-  public_subnet_names     = keys(var.vpc_network_info.public_subnets)
+  public_subnet_names     = local.subnet_names
   enable_dns_hostnames    = true
   enable_dns_support      = true
   map_public_ip_on_launch = true
+
+  tags = local.default_tags
 }
 
 ## EC2 Instance resources
@@ -30,12 +45,12 @@ data "aws_ssm_parameter" "amzn2_linux" {
 }
 
 resource "aws_iam_instance_profile" "main" {
-  name = "burrito_barn_instance_profile"
+  name = local.profile_name
   role = aws_iam_role.main.name
 }
 
 resource "aws_iam_role" "main" {
-  name               = "burrito_barn_role"
+  name               = local.role_name
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
 
@@ -62,12 +77,12 @@ resource "aws_instance" "web" {
   })
 
   tags = {
-    Name = "web-instance"
+    Name = local.instance_name
   }
 }
 
 resource "aws_security_group" "main" {
-  name   = "burrito_barn_sg"
+  name   = local.sg_name
   vpc_id = module.networking.vpc_id
 
   # HTTP access from anywhere
@@ -90,7 +105,7 @@ resource "aws_security_group" "main" {
 ## Other Resources
 
 resource "aws_secretsmanager_secret" "api_secret" {
-  name                           = "api-key-bb"
+  name                           = local.secret_name
   description                    = "Secret to store API key"
   force_overwrite_replica_secret = true
   recovery_window_in_days        = 0
@@ -98,12 +113,13 @@ resource "aws_secretsmanager_secret" "api_secret" {
 
 resource "aws_secretsmanager_secret_version" "api_secret_version" {
   secret_id     = aws_secretsmanager_secret.api_secret.id
-  secret_string = "BG^&*UJHJU*&^YUJHY&U"
-
+  secret_string = var.api_key
 }
 
 module "storage" {
   source                = "./modules/s3_bucket"
-  bucket_prefix         = var.bucket_prefix
+  bucket_prefix         = local.bucket_name
   ec2_instance_role_arn = aws_iam_role.main.arn
+
+  tags = local.default_tags
 }
