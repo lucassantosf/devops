@@ -62,7 +62,25 @@ terraform destroy
 11. List all atributes of a single object `terraform state show ADDR` , `terraform state show aws_vpn.main`
 12. Show outputs store in state `terraform output NAME`
 13. Passing variable via command `terraform plan -var "instance_type=t3.nano"`
-14. Manage and update as needed
+
+## State Fundamentals
+
+14. Refresh local state with Cloud Provider and update the plan `terraform plan -refresh-only`
+15. Keep the changes made directly in the Cloud Provider and update the plan `terraform apply -refresh-only`
+
+### State Manipulation 
+
+16. Move a resource to a new address `terraform state mv SOURCE DESTINATION` - `terraform state mv aws_instance.web aws_instance.app`
+17. Move a resource to a new address `terraform state rm SOURCE DESTINATION`
+18. Forcing unlock state `terraform force-unlock <ID>` - `terraform force-unlock 1d8f9a3f-30d3-8e96-8735-da2fe879757e`
+
+### Terraform Workspace commands 
+19. Show selected workspace `terraform workspace show`
+20. List available workspaces `terraform workspace list`
+21. Create new workspace `terraform workspace new NAME` and it'll be selected as current one 
+22. Select a workspace `terraform workspace select NAME`
+23. Select a workspace or created if doesnt exist `terraform workspace select -or-create=true NAME`
+24. Delete a workspace `terraform workspace delete NAME`
 
 ## Resources
 - [Official Terraform Documentation](https://www.terraform.io/docs/)
