@@ -82,6 +82,10 @@ terraform destroy
 23. Select a workspace or created if doesnt exist `terraform workspace select -or-create=true NAME`
 24. Delete a workspace `terraform workspace delete NAME`
 
+### Terraform Providers
+25. Retrieving terraform version `terraform version` 
+26. Listing all providers available into your project `terraform providers` 
+
 ## Resources
 - [Official Terraform Documentation](https://www.terraform.io/docs/)
 - [Terraform CLI Commands](https://www.terraform.io/cli/commands)
