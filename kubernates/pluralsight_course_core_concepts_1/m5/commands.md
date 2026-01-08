@@ -65,13 +65,5 @@ k port-forward pod/my-nginx-7cb4dcc886-8nmsp 8080:80
 kubectl port-forward service/my-service LOCAL_PORT:SERVICE_PORT
 ```
 
-## Best Practices
-- Use appropriate Service types based on your use case
-- Leverage labels and selectors for precise Pod targeting
-- Consider network policies for security
-- Use LoadBalancer or Ingress for external access in production
-
-## Troubleshooting
-- Verify service endpoints: `kubectl get endpoints`
-- Check service logs: `kubectl logs service/my-service`
-- Ensure correct label selectors
+# Execute first nginx.deployment.yml
+# Execute after clusterIP.service.yml
