@@ -1,0 +1,149 @@
+############################################
+# CONFIG MAP
+############################################
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-env
+  labels:
+    app: mongo
+data:
+  MONGODB_DBNAME: codeWithDan
+  MONGODB_PASSWORD: password
+  MONGODB_ROLE: readWrite
+  MONGODB_ROOT_PASSWORD: password
+  MONGODB_ROOT_ROLE: root
+  MONGODB_ROOT_USERNAME: dbadmin
+  MONGODB_USERNAME: webrole
+
+---
+############################################
+# STORAGE CLASS (LOCAL)
+############################################
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-storage
+provisioner: kubernetes.io/no-provisioner
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+
+---
+############################################
+# PERSISTENT VOLUME
+############################################
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  local:
+    path: /tmp/data/db
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+            - minikube
+
+---
+############################################
+# SERVICE (HEADLESS)
+############################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+spec:
+  clusterIP: None
+  selector:
+    app: mongo
+  ports:
+    - port: 27017
+      targetPort: 27017
+
+---
+############################################
+# STATEFULSET
+############################################
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo
+spec:
+  serviceName: mongo
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+        - name: mongo
+          image: mongo
+          ports:
+            - containerPort: 27017
+          command:
+            - mongod
+            - "--auth"
+          env:
+            - name: MONGODB_DBNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-env
+                  key: MONGODB_DBNAME
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-env
+                  key: MONGODB_PASSWORD
+            - name: MONGODB_ROLE
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-env
+                  key: MONGODB_ROLE
+            - name: MONGODB_ROOT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-env
+                  key: MONGODB_ROOT_PASSWORD
+            - name: MONGODB_ROOT_ROLE
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-env
+                  key: MONGODB_ROOT_ROLE
+            - name: MONGODB_ROOT_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-env
+                  key: MONGODB_ROOT_USERNAME
+            - name: MONGODB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-env
+                  key: MONGODB_USERNAME
+          volumeMounts:
+            - name: mongo-volume
+              mountPath: /data/db
+
+  volumeClaimTemplates:
+    - metadata:
+        name: mongo-volume
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: local-storage
+        resources:
+          requests:
+            storage: 1Gi
