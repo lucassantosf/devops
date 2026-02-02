@@ -1,0 +1,22 @@
+apiVersion: skaffold/v4beta13
+kind: Config
+metadata:
+  name: final-app
+build:
+  artifacts:
+    - image: codewithdan/mongo
+      buildpacks:
+        builder: gcr.io/buildpacks/builder:v1
+manifests:
+  rawYaml:
+    - output/docker-env-app-production-env-configmap.yaml
+    - output/docker-env-mongo-production-env-configmap.yaml
+    - output/mongo-deployment.yaml
+    - output/mongo-service.yaml
+    - output/nginx-pod.yaml
+    - output/nginx-service.yaml
+    - output/node-cm0-configmap.yaml
+    - output/node-deployment.yaml
+    - output/node-service.yaml
+    - output/redis-deployment.yaml
+    - output/redis-service.yaml

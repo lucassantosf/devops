@@ -1,0 +1,20 @@
+apiVersion: skaffold/v4beta13
+kind: Config
+metadata:
+  name: frontend-app
+build:
+  artifacts:
+    - image: nginx-angular-jumpstart
+      context: .docker
+      docker:
+        dockerfile: nginx.dockerfile
+    - image: node-service-jumpstart
+      context: .docker
+      docker:
+        dockerfile: node.dockerfile
+manifests:
+  rawYaml:
+    - nginx-deployment.yaml
+    - nginx-service.yaml
+    - node-deployment.yaml
+    - node-service.yaml

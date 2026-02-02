@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml -o ./output/
+    kompose.version: 1.38.0 (a8f5d1cbd)
+  labels:
+    io.kompose.service: node
+  name: node
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      io.kompose.service: node
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml -o ./output/
+        kompose.version: 1.38.0 (a8f5d1cbd)
+      labels:
+        io.kompose.service: node
+    spec:
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: docker-env-app-production-env
+          image: codewithdan/node-codewithdan
+          name: node
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /var/www/codewithdan
+              name: node-cm0
+          workingDir: /var/www/codewithdan
+      restartPolicy: Always
+      volumes:
+        - configMap:
+            name: node-cm0
+          name: node-cm0
