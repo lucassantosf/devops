@@ -47,7 +47,7 @@ module "eks" {
   version = "19.16.0"
 
   cluster_name                   = local.cluster_name
-  cluster_version                = "1.27"
+  cluster_version                = "1.28"
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
@@ -68,15 +68,15 @@ module "eks" {
       desired_size = 2
     }
 
-    # two = {
-    #   name = "node-group-2"
+    two = {
+      name = "node-group-2"
 
-    #   instance_types = ["t3.medium"]
+      instance_types = ["t3.medium"]
 
-    #   min_size     = 1
-    #   max_size     = 2
-    #   desired_size = 1
-    # }
+      min_size     = 1
+      max_size     = 2
+      desired_size = 1
+    }
   }
 }
 
