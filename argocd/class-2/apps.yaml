@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: conversao-temperatura
+  namespace: argocd
+spec:
+  project: live-proj
+  source:
+    repoURL: https://github.com/lucassantosf/k8s-web-color-page
+    targetRevision: HEAD 
+    path: conversao 
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: conversao-temperatura
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rotten
+  namespace: argocd
+spec:
+  project: live-proj
+  source:
+    repoURL: https://github.com/lucassantosf/k8s-web-color-page
+    targetRevision: HEAD 
+    path: rotten 
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: rotten
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

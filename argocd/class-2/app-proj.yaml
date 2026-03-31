@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: live-proj
+  namespace: argocd
+spec:
+  description: Projeto para aplicações de demonstração
+  sourceRepos:
+    - https://github.com/lucassantosf/k8s-web-color-page
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: conversao-temperatura
+    - server: https://kubernetes.default.svc
+      namespace: rotten
+  clusterResourceWhitelist:
+    - group: ''
+      kind: 'Namespace'
+  namespaceResourceWhitelist:
+    # - group: 'apps'
+    #   kind: 'Deployment'
+    # - group: 'apps'
+    #   kind: 'ReplicasSet'
+    - group: 'apps'
+      kind: '*'
+    - group: ''
+      kind: '*'
+    # - group: ''
+    #   kind: 'Pod'
+    # - group: ''
+    #   kind: 'Service'

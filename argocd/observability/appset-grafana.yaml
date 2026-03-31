@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: grafana
+  namespace: argocd
+spec:
+  template:
+    metadata:
+      name: 'grafana-{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://grafana.github.io/helm-charts
+        chart: grafana
+        targetRevision: 8.8.5
+        helm:
+          parameters: 
+            - name: server.type
+              value: "LoadBalancer"
+          releaseName: grafana
+          namespace: monitoramento
+      destination:
+        server: '{{server}}'
+        namespace: grafana
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+  generators:
+    - clusters: {}
