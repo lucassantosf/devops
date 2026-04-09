@@ -87,4 +87,4 @@ def calcular_percentil(lista, p):
     return d0 + d1
 
 if __name__ == "__main__":
-    analisar_resultados('load-test.json') # Ajuste para o nome do seu arquivo
+    analisar_resultados('resultados_com_tags.json') # Ajuste para o nome do seu arquivo
