@@ -106,3 +106,8 @@ Improvements and additional learning materials are welcome.
 
 ## Disclaimer
 This documentation is for educational purposes, providing insights into Kubernetes concepts and architecture.
+
+## Argo rollout commands
+
+k argo rollouts promote webcolor && k argo rollouts get ro
+k argo rollouts undo webcolor

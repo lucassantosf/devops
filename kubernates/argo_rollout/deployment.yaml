@@ -1,4 +1,26 @@
 apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: webcolor
+spec:
+  metrics:
+    - name: success-rate
+      interval: 30s
+      count: 4
+      successCondition: result >= 0.9 
+      failureCondiction: result < 0.8
+      provider: 
+        prometheus:
+          address: http://prometheus-server.monitoramento.svc.cluster.local 
+        query:|
+          scalar(
+            sum(rate(flask_http_request_total{app="webcolor",status=~"2.."}[2m]))
+            /
+            sum(rate(flask_http_request_total{app="webcolor"][2m]))
+          )
+
+-----
+apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: webcolor
@@ -11,6 +33,9 @@ spec:
     metadata:
       labels:
         app: webcolor
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '80'
     spec:
       containers:
       - name: webcolor
@@ -22,11 +47,13 @@ spec:
     canary: 
       steps:
       - setWeight: 25
-      - pause: {}
+      - analysis:
+          template: 
+          - templateName : webcolor-analysis
       - setWeight: 50
-      - pause: {}
-      - setWeight: 75
-      - pause: {}
+      - analysis:
+          template: 
+          - templateName : webcolor-analysis
       - setWeight: 100
 ---
 apiVersion: v1 
