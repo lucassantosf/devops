@@ -1,113 +1,134 @@
 # Kubernetes Architecture and Concepts
 
-## Cluster Architecture
+This directory contains resources, notes, and hands-on projects related to Kubernetes.
+
+## 📁 Directory Structure
+
+- [argo_rollout/](./argo_rollout/): Advanced deployment strategies using Argo Rollouts (Canary/Blue-Green).
+- [book_devops_native_kubernetes_demo_apps/](./book_devops_native_kubernetes_demo_apps/): Examples from the book "Cloud Native DevOps with Kubernetes".
+- **Pluralsight Course Modules**:
+  - [pluralsight_course_core_concepts_1/](./pluralsight_course_core_concepts_1/): Fundamentals of K8s.
+  - [pluralsight_course_deploying_your_code_2/](./pluralsight_course_deploying_your_code_2/): CI/CD and deployments.
+  - [pluralsight_course_volumes_concepts_3/](./pluralsight_course_volumes_concepts_3/): Storage and Volumes.
+  - [pluralsight_course_kompose_4/](./pluralsight_course_kompose_4/): Migrating Docker Compose to K8s.
+  - [pluralsight_course_moving_to_the_cloud_5/](./pluralsight_course_moving_to_the_cloud_5/): Cloud-specific K8s.
+
+---
+
+## 🚀 Argo Rollouts
+Argo Rollouts is a Kubernetes controller and set of CRDs which provides advanced deployment capabilities.
+
+### Webcolor Canary Demo
+Located in `argo_rollout/`, this example demonstrates a **Canary** deployment strategy with automated analysis using **Prometheus**.
+
+#### Key Components:
+- **Rollout**: Replaces standard Deployments. Defines a strategy with steps (25%, 50%, 100% traffic weights).
+- **AnalysisTemplate**: Defines how to measure success (e.g., success-rate >= 90%) using Prometheus metrics.
+- **Service**: A LoadBalancer service to externalize the `webcolor` app.
+
+#### Useful Commands:
+```bash
+# Apply the rollout manifests
+kubectl apply -f kubernates/argo_rollout/deployment.yaml
+
+# Monitor the rollout status in real-time
+kubectl argo rollouts get rollout webcolor --watch
+
+# Promote the rollout to the next step
+kubectl argo rollouts promote webcolor
+
+# Undo/Rollback a rollout
+kubectl argo rollouts undo webcolor
+
+# List all rollouts in the current namespace
+kubectl argo rollouts list rollouts
+```
+
+> [!TIP]
+> Make sure your Prometheus server is accessible at the address specified in the `AnalysisTemplate` (defaulting to `http://prometheus-server.monitoramento.svc.cluster.local`).
+
+---
+
+## 🏗️ Cluster Architecture
 
 ### Cluster Components
 - **Master Node (Control Plane)**
-  - Manages the cluster
-  - Maintains and updates desired state
-  - Receives and executes new commands
-  - Key components:
-    - Control Manager (c-m)
-    - API Server
-    - Scheduler
-    - etcd (distributed key-value store)
-
+  - Manages the cluster, maintains desired state, and executes commands.
+  - Key components: Control Manager (c-m), API Server, Scheduler, etcd.
 - **Worker Nodes**
-  - Execute applications
-  - Components:
-    - Kubelet
-    - Kube-proxy
+  - Execute applications.
+  - Components: Kubelet, Kube-proxy.
 
 ### API Server
-- Responsible for communication between cluster components and external world
-- Interacted with using `kubectl` command-line tool
+- Central communication hub for cluster components and `kubectl`.
 
-## Cluster Creation
+---
+
+## 🛠️ Cluster Creation & Setup
 
 ### Prerequisites
-- Install `kubectl`: [Official Kubernetes Documentation](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
-- Install `minikube`: [Minikube Installation Guide](https://minikube.sigs.k8s.io/docs/start/)
+- Install [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
+- Install [minikube](https://minikube.sigs.k8s.io/docs/start/)
 
 ### Starting a Cluster
 ```bash
 minikube start --vm-driver=virtualbox
 ```
 
-## Core Kubernetes Concepts
+---
+
+## 📦 Core Kubernetes Concepts
 
 ### Pods
-- Basic unit of deployment
-- Can contain one or more containers
-- Receives a unique IP address
-- Allows port mapping within the pod
+- Basic unit of deployment; can contain one or more containers.
+- Each pod gets a unique IP.
 
 ### Services
-- **ClusterIP**: Internal cluster communication
-- **NodePort**: Exposes container externally
-- **LoadBalancer**: External access using cloud provider's load balancer
+- **ClusterIP**: Internal communication.
+- **NodePort**: External access via node port.
+- **LoadBalancer**: External access via cloud LB.
 
-### ConfigMap
-- Organizes configuration information
-- Helps manage environment variables
+### ConfigMap & Secrets
+- Organizes configuration and handles sensitive data.
 
-### ReplicaSets
-- Maintains a stable set of replica pods
-- Ensures specified number of identical pods are running
-- Manages pod availability and replacement
+### ReplicaSets & Deployments
+- **ReplicaSet**: Ensures X number of pods are running.
+- **Deployment**: Manages ReplicaSets, handles rollouts and rollbacks.
 
-### Deployments
-- Layer above ReplicaSets
-- Audits and tracks changes in configuration files
-- Allows rollback to specific versions
-- Automatically manages ReplicaSets
+### Volumes & Storage
+- **Volumes**: Pod-dependent storage.
+- **Persistent Volumes (PV)**: Lifecycle independent of pods.
+- **StatefulSet**: For applications requiring stable identifiers and persistent storage.
 
-### Volumes
-- Independent lifecycle from containers
-- Dependent on pods
-- Types:
-  - Ephemeral volumes: Live as long as the pod
-  - Persistent volumes: Exist beyond pod lifecycle
-- Preserves data between container restarts
+---
 
-### StatefulSet
-- Provides stable, persistent storage for pods
+## 📈 Scalability & Health
+
+### Scaling Models
+- **Vertical Scaling**: Increasing resources (CPU/RAM) of existing nodes/instances.
+- **Horizontal Scaling**: Adding more pods/resources to distribute load.
 
 ### Probes
-- Monitors application health
-- Helps Kubernetes detect and respond to application issues
+- **Liveness**: Restarts unhealthy containers.
+- **Readiness**: Determines if a pod is ready to serve traffic.
 
-## Scalability Models
+---
 
-### Vertical Scaling
-- Increase resources of existing infrastructure
-- Example: Upgrading EC2 instance with more processing power and memory
+## 💡 Best Practices
+- Use declarative configuration (`kubectl apply`).
+- Implement resource limits and quotas.
+- Use namespaces for logical isolation.
+- Configure health checks (probes).
+- Follow GitOps principles for automated deployments.
 
-### Horizontal Scaling
-- Add more identical resources
-- Distribute load across multiple parallel resources
-- Enables better performance and reliability
+---
 
-## Best Practices
-- Use declarative configuration
-- Implement resource limits
-- Utilize namespaces
-- Configure health checks
-- Use ConfigMaps and Secrets
-- Practice GitOps principles
-
-## Learning Resources
+## 📚 Learning Resources
 - [Official Kubernetes Documentation](https://kubernetes.io/docs/)
 - [Kubernetes Tutorials](https://kubernetes.io/docs/tutorials/)
-- [Cloud Native Computing Foundation](https://www.cncf.io/)
+- [Cloud Native Computing Foundation (CNCF)](https://www.cncf.io/)
 
-## Contribution
-Improvements and additional learning materials are welcome.
+---
 
-## Disclaimer
+## ⚖️ Disclaimer
 This documentation is for educational purposes, providing insights into Kubernetes concepts and architecture.
-
-## Argo rollout commands
-
-k argo rollouts promote webcolor && k argo rollouts get ro
-k argo rollouts undo webcolor
