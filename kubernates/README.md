@@ -132,3 +132,9 @@ minikube start --vm-driver=virtualbox
 
 ## ⚖️ Disclaimer
 This documentation is for educational purposes, providing insights into Kubernetes concepts and architecture.
+
+
+
+# List api resources
+
+kubectl api-resources
